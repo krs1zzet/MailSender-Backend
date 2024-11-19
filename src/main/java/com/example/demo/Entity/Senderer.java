@@ -6,29 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.security.auth.Subject;
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 @Entity
-@Table(name = "mail")
-public class Mail {
+@Table(name = "senderer")
+public class Senderer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "header")
-    private String header;
+    @Column(name = "fname")
+    private String fname;
 
-    @Column(name = "body")
-    private String body;
+    @Column(name = "lname")
+    private String lname;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private Senderer senderer;
-
-
+    @Column(name = "email")
+    private String email;
 
 }
