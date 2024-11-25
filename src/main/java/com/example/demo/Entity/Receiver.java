@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -26,4 +28,8 @@ public class Receiver {
 
     @Column(name = "email")
     private String email;
+
+    @ManyToMany(mappedBy = "receivers")
+    private List<Mail> mails;
+
 }

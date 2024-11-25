@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,4 +16,5 @@ public class MailDTO {
     private String header;
     private String body;
     private Long sender_id;
+    private List<Long> receiver_ids;
 }

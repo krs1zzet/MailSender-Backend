@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.service.MailService;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,19 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class MailController {
+    private final MailService mailService;
 
-    private final MailSender mailSender;
-
-    public MailController(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+    public MailController(MailService mailService) {
+        this.mailService = mailService;
     }
 
-    @GetMapping("/send-mail")
-    public String sendEmail(){
+//    private final MailSender mailSender;
 
+//    public MailController(JavaMailSender mailSender) {
+//        this.mailSender = mailSender;
+//    }
 
-
-    }
+    @GetMapping("/mail")
 
 
     //        try {

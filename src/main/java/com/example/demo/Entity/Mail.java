@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.security.auth.Subject;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,10 +27,15 @@ public class Mail {
     @Column(name = "body")
     private String body;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "sender_id")
     private Senderer senderer;
 
-
-
+    @ManyToMany
+    @JoinTable(
+            name = "mail_receiver",
+            joinColumns = @JoinColumn(name = "mail_id"),
+            inverseJoinColumns = @JoinColumn(name = "receiver_id")
+    )
+    private List<Receiver> receivers;
 }
