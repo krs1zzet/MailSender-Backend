@@ -29,6 +29,9 @@ public class Receiver {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "group_name")
+    private String groupName;
+
     @ManyToMany(mappedBy = "receivers")
     private List<Mail> mails;
 

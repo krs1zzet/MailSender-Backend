@@ -13,4 +13,5 @@ public class BaseReceiverRequest {
     private String fname;
     private String lname;
     private String email;
+    private String groupName;
 }

@@ -34,20 +34,21 @@ public class MailServiceImpl implements MailService {
         return mailDtoConverter.convert(theMail);
     }
 
-
     @Transactional
     @Override
     public void save(CreateMailRequest request) {
         Mail theMail = new Mail();
         theMail.setBody(request.getBody());
         theMail.setHeader(request.getHeader());
+        mailRepository.save(theMail);
     }
+
     @Transactional
     @Override
     public void deleteByID(Long theID) {
         Optional<Mail> mail = mailRepository.findById(theID);
         Mail theMail = mail.orElseThrow(() -> new RuntimeException("did not find the mail - " + theID));
-        deleteByID(theID);
+        deleteByID(theMail.getId());
     }
 
 //    @Override

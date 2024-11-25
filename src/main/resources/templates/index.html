@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mail Automation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+  <h1>Mail Automation System</h1>
+
+  <!-- Senderer Section -->
+  <section class="senderer-section">
+    <h2>Set Senderer</h2>
+    <form id="senderer-form">
+      <label for="senderer-email">Senderer Email:</label>
+      <input type="email" id="senderer-email" name="sendererEmail" placeholder="Enter sender email" required>
+      <label for="senderer-name">Senderer Name:</label>
+      <input type="text" id="senderer-name" name="sendererName" placeholder="Enter sender name" required>
+      <button type="submit">Save Senderer</button>
+    </form>
+  </section>
+
+  <!-- Mail Section -->
+  <section class="mail-section">
+    <h2>Set Mail</h2>
+    <form id="mail-form">
+      <label for="mail-subject">Mail Subject:</label>
+      <input type="text" id="mail-subject" name="mailSubject" placeholder="Enter mail subject" required>
+      <label for="mail-body">Mail Body:</label>
+      <textarea id="mail-body" name="mailBody" placeholder="Enter mail content" rows="5" required></textarea>
+      <button type="submit">Save Mail</button>
+    </form>
+  </section>
+
+  <!-- Receiver Import Section -->
+  <section class="receiver-section">
+    <h2>Import Receivers</h2>
+    <form id="receiver-form" enctype="multipart/form-data">
+      <label for="receiver-file">Upload Excel File:</label>
+      <input type="file" id="receiver-file" name="receiverFile" accept=".xls, .xlsx" required>
+      <button type="submit">Upload Receivers</button>
+    </form>
+  </section>
+</div>
+</body>
+</html>

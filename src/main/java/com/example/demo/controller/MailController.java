@@ -1,42 +1,42 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MailDTO;
+import com.example.demo.dto.request.CreateMailRequest;
 import com.example.demo.service.MailService;
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class MailController {
+    private static final Logger log = LoggerFactory.getLogger(MailController.class);
     private final MailService mailService;
 
     public MailController(MailService mailService) {
         this.mailService = mailService;
     }
 
-//    private final MailSender mailSender;
+    @GetMapping("/mails")
+    public ResponseEntity<List<MailDTO>> findAll(){
+        List<MailDTO> mailDTOList = mailService.findAll();
+        log.info("Mails found");
+        return ResponseEntity.ok(mailDTOList);
+    }
 
-//    public MailController(JavaMailSender mailSender) {
-//        this.mailSender = mailSender;
-//    }
+    @PostMapping("/mails")
+    public ResponseEntity<Void> addMail(@RequestBody CreateMailRequest request){
+        mailService.save(request);
+        log.info("Mail saved");
+        return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/mails/{mailId}")
+    public ResponseEntity<Void> deleteMailById(@PathVariable Long mailId){
+        mailService.deleteByID(mailId);
+        log.info("Mail deleted");
+        return ResponseEntity.ok().build();
+    }
 
-    @GetMapping("/mail")
-
-
-    //        try {
-//            SimpleMailMessage message = new SimpleMailMessage();
-//            message.setFrom("izzettin.karasayar@gmail.com");
-//            message.setTo("myelman17@gmail.com");
-//            message.setSubject("ornek baslik");
-//            message.setText("ornek mail bodysi");
-//
-//            mailSender.send(message);
-//            return "success";
-//        } catch (Exception e) {
-//            return e.getMessage();
-//        }
 }
