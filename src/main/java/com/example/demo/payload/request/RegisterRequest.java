@@ -1,6 +1,7 @@
 package com.example.demo.payload.request;
 
 import com.example.demo.enums.Role;
+import com.example.demo.validation.StrongPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
