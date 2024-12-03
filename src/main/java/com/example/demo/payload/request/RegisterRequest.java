@@ -1,9 +1,14 @@
 package com.example.demo.payload.request;
 
+import com.example.demo.enums.Role;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+
 
 @Data
 @Builder
