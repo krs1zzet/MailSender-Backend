@@ -1,12 +1,12 @@
 package com.example.demo.dto.converter;
 
-import com.example.demo.entity.Mail;
-import com.example.demo.entity.Receiver;
+import com.example.demo.Entity.Mail;
+import com.example.demo.Entity.Receiver;
 import com.example.demo.dto.ReceiverDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+import java.util.stream.Collectors;
 @Component
 public class ReceiverDtoConverter {
     public ReceiverDTO convert (Receiver from){

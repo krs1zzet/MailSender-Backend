@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+import com.example.demo.Entity.Mail;
 import com.example.demo.dto.MailDTO;
 import com.example.demo.dto.request.CreateMailRequest;
 

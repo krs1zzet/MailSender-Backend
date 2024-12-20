@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.security.auth.Subject;
 import java.util.List;
 
 @Getter

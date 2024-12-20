@@ -1,11 +1,10 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
-import com.example.demo.entity.Senderer;
+import com.example.demo.Entity.Senderer;
 import com.example.demo.dto.SendererDTO;
 import com.example.demo.dto.converter.SendererDtoConverter;
 import com.example.demo.dto.request.CreateSendererRequest;
 import com.example.demo.repo.SendererRepository;
-import com.example.demo.service.SendererService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

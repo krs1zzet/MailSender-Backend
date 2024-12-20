@@ -1,11 +1,10 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
-import com.example.demo.entity.Mail;
+import com.example.demo.Entity.Mail;
 import com.example.demo.dto.MailDTO;
 import com.example.demo.dto.converter.MailDtoConverter;
 import com.example.demo.dto.request.CreateMailRequest;
 import com.example.demo.repo.MailRepository;
-import com.example.demo.service.MailService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
