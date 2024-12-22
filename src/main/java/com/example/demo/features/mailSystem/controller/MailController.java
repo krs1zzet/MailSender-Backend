@@ -1,41 +1,32 @@
 package com.example.demo.features.mailSystem.controller;
 
-import com.example.demo.features.mailSystem.dto.MailDTO;
-import com.example.demo.features.mailSystem.dto.request.CreateMailRequest;
 import com.example.demo.features.mailSystem.service.MailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class MailController {
-    private static final Logger log = LoggerFactory.getLogger(MailController.class);
     private final MailService mailService;
 
     public MailController(MailService mailService) {
         this.mailService = mailService;
     }
 
-    @GetMapping("/mails")
-    public ResponseEntity<List<MailDTO>> findAll(){
-        List<MailDTO> mailDTOList = mailService.findAll();
-        log.info("Mails found");
-        return ResponseEntity.ok(mailDTOList);
-    }
-
-    @PostMapping("/mails")
-    public ResponseEntity<Void> addMail(@RequestBody CreateMailRequest request){
-        mailService.save(request);
-        log.info("Mail saved");
-        return ResponseEntity.ok().build();
-    }
-    @DeleteMapping("/mails/{mailId}")
-    public ResponseEntity<Void> deleteMailById(@PathVariable Long mailId){
-        mailService.deleteByID(mailId);
-        log.info("Mail deleted");
+    @PostMapping("/send-mail")
+    public ResponseEntity<Void> sendMail(@RequestParam Long senderID,
+                                         @RequestParam(required = false) List<Long> receiverIDs,
+                                         @RequestParam Long mailTemplateID) {
+        if (receiverIDs == null || receiverIDs.isEmpty()) {
+            throw new IllegalArgumentException("receiverIDs parameter is required and cannot be empty");
+        }
+        mailService.sendMail(senderID, receiverIDs, mailTemplateID);
+        log.info("Mail sent");
         return ResponseEntity.ok().build();
     }
 
