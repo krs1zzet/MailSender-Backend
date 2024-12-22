@@ -17,6 +17,4 @@ public class ReceiverDTO {
     private String lname;
     private String email;
     private String groupName;
-    private List<Long> mail_ids;
-
 }
