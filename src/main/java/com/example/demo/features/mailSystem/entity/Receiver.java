@@ -1,10 +1,7 @@
 package com.example.demo.features.mailSystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -26,13 +23,12 @@ public class Receiver {
     @Column(name = "lname")
     private String lname;
 
+    @NonNull
     @Column(name = "email")
     private String email;
 
     @Column(name = "group_name")
     private String groupName;
 
-    @ManyToMany(mappedBy = "receivers")
-    private List<Mail> mails;
 
 }
