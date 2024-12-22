@@ -7,8 +7,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateMailRequest extends BaseMailRequest{
-    public CreateMailRequest(String header, String body) {
+public class CreateMailTemplateRequest extends BaseMailTemplateRequest {
+    public CreateMailTemplateRequest(String header, String body) {
         super(header, body);
     }
 }

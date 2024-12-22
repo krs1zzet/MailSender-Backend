@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class BaseMailRequest {
+public class BaseMailTemplateRequest {
     private String header;
     private String body;
 }
