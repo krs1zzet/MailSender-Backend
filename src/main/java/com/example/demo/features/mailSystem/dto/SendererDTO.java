@@ -1,4 +1,4 @@
-package com.example.demo.features.user.dto;
+package com.example.demo.features.mailSystem.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +16,4 @@ public class SendererDTO {
     private String fname;
     private String lname;
     private String email;
-    private List<Long> mail_ids;
 }

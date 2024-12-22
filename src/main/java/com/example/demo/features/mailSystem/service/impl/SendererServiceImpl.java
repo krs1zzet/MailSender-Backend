@@ -1,11 +1,12 @@
-package com.example.demo.features.user.service.impl;
+package com.example.demo.features.mailSystem.service.impl;
 
-import com.example.demo.features.user.entity.Senderer;
-import com.example.demo.features.user.dto.SendererDTO;
-import com.example.demo.features.user.dto.converter.SendererDtoConverter;
-import com.example.demo.features.user.dto.request.CreateSendererRequest;
-import com.example.demo.features.user.repository.SendererRepository;
-import com.example.demo.features.user.service.SendererService;
+import com.example.demo.features.mailSystem.entity.Senderer;
+import com.example.demo.features.mailSystem.dto.SendererDTO;
+import com.example.demo.features.mailSystem.dto.converter.SendererDtoConverter;
+import com.example.demo.features.mailSystem.dto.request.CreateSendererRequest;
+import com.example.demo.features.mailSystem.repository.SendererRepository;
+import com.example.demo.features.mailSystem.service.SendererService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,5 +48,15 @@ public class SendererServiceImpl implements SendererService {
         Optional<Senderer> senderer = sendererRepository.findById(id);
         Senderer theSenderer = senderer.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
         sendererRepository.deleteById(theSenderer.getId());
+    }
+    @Override
+    @Transactional
+    public void updateById(Long id, CreateSendererRequest request) {
+        Optional<Senderer> senderer = sendererRepository.findById(id);
+        Senderer theSenderer = senderer.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
+        theSenderer.setEmail(request.getEmail());
+        theSenderer.setFname(request.getFname());
+        theSenderer.setLname(request.getLname());
+        sendererRepository.save(theSenderer);
     }
 }

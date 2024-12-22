@@ -1,8 +1,8 @@
-package com.example.demo.features.user.controller;
+package com.example.demo.features.mailSystem.controller;
 
-import com.example.demo.features.user.dto.request.CreateSendererRequest;
-import com.example.demo.features.user.service.SendererService;
-import com.example.demo.features.user.dto.SendererDTO;
+import com.example.demo.features.mailSystem.dto.request.CreateSendererRequest;
+import com.example.demo.features.mailSystem.service.SendererService;
+import com.example.demo.features.mailSystem.dto.SendererDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +34,19 @@ public class SendererController {
         return  ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/senderers")
+    @DeleteMapping("/senderers/{id}")
     public ResponseEntity<Void> deleteSenderer(@PathVariable Long id){
         sendererService.deleteById(id);
         log.info("Senderer deleted");
         return ResponseEntity.ok().build();
     }
+    @PutMapping("/senderers/{id}")
+    public ResponseEntity<Void> updateSenderer(@RequestBody CreateSendererRequest request, @PathVariable Long id){
+        sendererService.updateById(id, request);
+        log.info("Senderer updated");
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }

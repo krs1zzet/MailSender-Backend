@@ -1,4 +1,4 @@
-package com.example.demo.features.user.dto.request;
+package com.example.demo.features.mailSystem.dto.request;
 
 import lombok.*;
 

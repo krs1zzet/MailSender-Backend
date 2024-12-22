@@ -1,6 +1,5 @@
-package com.example.demo.features.user.entity;
+package com.example.demo.features.mailSystem.entity;
 
-import com.example.demo.features.mailSystem.entity.Mail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +30,4 @@ public class Senderer {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "senderer")
-    private List<Mail> mails;
 }
