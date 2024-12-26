@@ -20,7 +20,7 @@ public class MailController {
 
     @PostMapping("/send-mail")
     public ResponseEntity<Void> sendMail(@RequestParam Long senderID,
-                                         @RequestParam(required = false) List<Long> receiverIDs,
+                                         @RequestParam List<Long> receiverIDs,
                                          @RequestParam Long mailTemplateID) {
         if (receiverIDs == null || receiverIDs.isEmpty()) {
             throw new IllegalArgumentException("receiverIDs parameter is required and cannot be empty");
