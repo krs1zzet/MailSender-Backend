@@ -3,7 +3,6 @@ package com.example.demo.features.mailSystem.controller;
 import com.example.demo.features.mailSystem.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
