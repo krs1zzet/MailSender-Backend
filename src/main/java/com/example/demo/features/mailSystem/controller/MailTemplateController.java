@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+
 public class MailTemplateController {
     private static final Logger log = LoggerFactory.getLogger(MailTemplateController.class);
     private final MailTemplateService mailTemplateService;

@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+
 public class ReceiverController {
     private static final Logger log = LoggerFactory.getLogger(ReceiverController.class);
     private final ReceiverService receiverService;
