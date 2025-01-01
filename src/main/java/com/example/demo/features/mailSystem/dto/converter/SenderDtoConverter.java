@@ -1,22 +1,22 @@
 package com.example.demo.features.mailSystem.dto.converter;
 
-import com.example.demo.features.mailSystem.entity.Senderer;
-import com.example.demo.features.mailSystem.dto.SendererDTO;
+import com.example.demo.features.mailSystem.entity.Sender;
+import com.example.demo.features.mailSystem.dto.SenderDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class SendererDtoConverter {
-    public SendererDTO convert (Senderer from){
-        return new SendererDTO(
+public class SenderDtoConverter {
+    public SenderDTO convert (Sender from){
+        return new SenderDTO(
                 from.getId(),
                 from.getFname(),
                 from.getLname(),
                 from.getEmail()
         );
     }
-    public List<SendererDTO> convert (List<Senderer> from){
+    public List<SenderDTO> convert (List<Sender> from){
         return from.stream().map(this::convert).toList();
     }
 }

@@ -1,18 +1,15 @@
-package com.example.demo.features.mailSystem.dto;
+package com.example.demo.features.mailSystem.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class SendererDTO {
-    private Long id;
+@NoArgsConstructor
+@Setter
+@Getter
+public class BaseSenderRequest {
     private String fname;
     private String lname;
     private String email;

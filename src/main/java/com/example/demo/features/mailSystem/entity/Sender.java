@@ -6,15 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @Entity
-@Table(name = "senderer")
-public class Senderer {
+@Table(name = "sender")
+public class Sender {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,5 +27,6 @@ public class Senderer {
 
     @Column(name = "email")
     private String email;
+
 
 }
