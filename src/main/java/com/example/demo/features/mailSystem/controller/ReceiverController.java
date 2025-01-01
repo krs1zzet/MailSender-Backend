@@ -3,6 +3,7 @@ package com.example.demo.features.mailSystem.controller;
 import com.example.demo.features.mailSystem.dto.ReceiverDTO;
 import com.example.demo.features.mailSystem.dto.SendererDTO;
 import com.example.demo.features.mailSystem.dto.request.CreateReceiverRequest;
+import com.example.demo.features.mailSystem.service.ExcelService;
 import com.example.demo.features.mailSystem.service.ReceiverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +21,11 @@ import java.util.List;
 public class ReceiverController {
     private static final Logger log = LoggerFactory.getLogger(ReceiverController.class);
     private final ReceiverService receiverService;
+    private final ExcelService excelService;
 
-    public ReceiverController(ReceiverService receiverService) {
+    public ReceiverController(ReceiverService receiverService, ExcelService excelService) {
         this.receiverService = receiverService;
+        this.excelService = excelService;
     }
 
     @GetMapping("/receivers")
@@ -36,6 +39,12 @@ public class ReceiverController {
     public ResponseEntity<Void> createReceiver(@RequestBody CreateReceiverRequest request){
         receiverService.save(request);
         log.info("Receiver saved");
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/receivers/excel")
+    public ResponseEntity<Void> saveReceiversFromExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        excelService.saveReceiversFromExcel(file);
+        log.info("Receivers saved from excel");
         return ResponseEntity.ok().build();
     }
 
@@ -52,6 +61,7 @@ public class ReceiverController {
         log.info("Receiver updated");
         return ResponseEntity.ok().build();
     }
+
 
 
 
