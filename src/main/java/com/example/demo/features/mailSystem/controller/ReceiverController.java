@@ -32,6 +32,12 @@ public class ReceiverController {
         log.info("Finding all Receivers");
         return ResponseEntity.ok(receiverDTOList);
     }
+    @GetMapping("/receivers/{eventId}")
+    public ResponseEntity<List<ReceiverDTO>> findReceiversByEventId(@PathVariable Long eventId){
+        List<ReceiverDTO> receiverDTOList = receiverService.findReceiversByEventId(eventId);
+        log.info("Finding all Receivers by event id");
+        return ResponseEntity.ok(receiverDTOList);
+    }
 
     @PostMapping("/receivers")
     public ResponseEntity<Void> createReceiver(@RequestBody CreateReceiverRequest request){
