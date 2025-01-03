@@ -27,6 +27,12 @@ public class SenderController {
         log.info("Find all senders");
         return ResponseEntity.ok(senderDTOList);
     }
+    @GetMapping("/senders/{eventId}")
+    public ResponseEntity<List<SenderDTO>> findSendersByEventId(@PathVariable Long eventId){
+        List<SenderDTO> senderDTOList = senderService.findSendersByEventId(eventId);
+        log.info("Find all senders by event id");
+        return ResponseEntity.ok(senderDTOList);
+    }
 
     @PostMapping("/senders")
     public ResponseEntity<Void> createSenderer(@RequestBody CreateSenderRequest request){
