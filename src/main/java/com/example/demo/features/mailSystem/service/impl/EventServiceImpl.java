@@ -1,11 +1,16 @@
 package com.example.demo.features.mailSystem.service.impl;
 
 import com.example.demo.features.mailSystem.dto.EventDTO;
+import com.example.demo.features.mailSystem.dto.MailTemplateDTO;
 import com.example.demo.features.mailSystem.dto.converter.EventDtoConverter;
+import com.example.demo.features.mailSystem.dto.converter.MailTemplateDtoConverter;
 import com.example.demo.features.mailSystem.dto.request.CreateEventRequest;
 import com.example.demo.features.mailSystem.entity.Event;
+import com.example.demo.features.mailSystem.entity.Receiver;
+import com.example.demo.features.mailSystem.entity.Sender;
 import com.example.demo.features.mailSystem.repository.EventRepository;
 import com.example.demo.features.mailSystem.service.EventService;
+import com.example.demo.features.mailSystem.service.MailTemplateService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +20,7 @@ import java.util.Optional;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EventDtoConverter eventDtoConverter;
+
 
     public EventServiceImpl(EventRepository eventRepository, EventDtoConverter eventDtoConverter) {
         this.eventRepository = eventRepository;
@@ -27,6 +33,13 @@ public class EventServiceImpl implements EventService {
         Event event = eventDTO.orElseThrow(() -> new RuntimeException("Did not find event id - " + id));
         return eventDtoConverter.convert(event);
     }
+
+    @Override
+    public Event findById_ReturnEvent(Long id) {
+        Optional<Event> eventDTO = eventRepository.findById(id);
+        return eventDTO.orElseThrow(() -> new RuntimeException("Did not find event id - " + id));
+    }
+
 
     @Override
     public List<EventDTO> findAll() {
@@ -60,4 +73,6 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(theEvent);
 
     }
+
+
 }
