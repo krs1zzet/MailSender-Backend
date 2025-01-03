@@ -5,14 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SenderDTO {
     private Long id;
-    private String fname;
-    private String lname;
     private String email;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastUsedAt;
     private Long eventId;
 }
