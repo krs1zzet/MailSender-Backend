@@ -10,9 +10,10 @@ import java.util.List;
 public interface ReceiverService {
      void save(CreateReceiverRequest request);
      void deleteByID(Long id);
-     ReceiverDTO findById(CreateReceiverRequest request);
+     ReceiverDTO findById(Long id);
      List<ReceiverDTO> findAll();
-        void updateByID(Long id, CreateReceiverRequest request);
+     void updateByID(Long id, CreateReceiverRequest request);
+     List<ReceiverDTO> findReceiversByEventId(Long theID);
     }
 
 
