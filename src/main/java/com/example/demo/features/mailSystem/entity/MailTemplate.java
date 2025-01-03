@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,4 +25,8 @@ public class MailTemplate {
 
     @Column(name = "body")
     private String body;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
 }
