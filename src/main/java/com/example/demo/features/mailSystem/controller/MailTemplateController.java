@@ -20,31 +20,38 @@ public class MailTemplateController {
         this.mailTemplateService = mailTemplateService;
     }
 
-    @GetMapping("/mails")
+    @GetMapping("/mailTemplates")
     public ResponseEntity<List<MailTemplateDTO>> findAllMailTemplates(){
         List<MailTemplateDTO> mailTemplateDTOList = mailTemplateService.findAll();
         log.info("Mails found");
         return ResponseEntity.ok(mailTemplateDTOList);
     }
+    @GetMapping("/mailTemplates/{eventId}")
+    public ResponseEntity<List<MailTemplateDTO>> findMailTemplateById(@PathVariable Long eventId){
+        List<MailTemplateDTO> mailTemplateDTOList = mailTemplateService.findMailTemplatesByEventId(eventId);
+        log.info("Mails found by event id");
+        return ResponseEntity.ok(mailTemplateDTOList);
+    }
 
-    @PostMapping("/mails")
+    @PostMapping("/mailTemplates")
     public ResponseEntity<Void> createMailTemplate(@RequestBody CreateMailTemplateRequest request){
         mailTemplateService.save(request);
         log.info("Mail saved");
         return ResponseEntity.ok().build();
     }
-    @DeleteMapping("/mails/{mailId}")
+    @DeleteMapping("/mailTemplates/{mailId}")
     public ResponseEntity<Void> deleteMailTemplateById(@PathVariable Long mailId){
         mailTemplateService.deleteByID(mailId);
         log.info("Mail deleted");
         return ResponseEntity.ok().build();
     }
-    @PutMapping("/mails/{mailId}")
+    @PutMapping("/mailTemplates/{mailId}")
     public ResponseEntity<Void> updateMailTemplate(@RequestBody CreateMailTemplateRequest request, @PathVariable Long mailId){
         mailTemplateService.updateByID(mailId, request);
         log.info("Mail updated");
         return ResponseEntity.ok().build();
     }
+
 
 
 }
