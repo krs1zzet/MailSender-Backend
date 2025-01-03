@@ -38,6 +38,14 @@ public class Sender {
     @JoinColumn(name = "event_id")
     private Event event;
 
+    public Sender(Long id,String email, LocalDateTime createdAt, LocalDateTime lastUsedAt, Event event) {
+       this.id = id;
+        this.email = email;
+        this.createdAt = createdAt;
+        this.lastUsedAt = lastUsedAt;
+        this.event = event;
+    }
+
 
 
 
