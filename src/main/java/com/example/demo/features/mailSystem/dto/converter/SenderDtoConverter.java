@@ -11,9 +11,9 @@ public class SenderDtoConverter {
     public SenderDTO convert (Sender from){
         return new SenderDTO(
                 from.getId(),
-                from.getFname(),
-                from.getLname(),
                 from.getEmail(),
+                from.getCreatedAt(),
+                from.getLastUsedAt(),
                 from.getEvent().getId()
         );
     }
