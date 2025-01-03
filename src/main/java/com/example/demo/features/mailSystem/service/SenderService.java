@@ -12,5 +12,7 @@ public interface SenderService {
     void deleteById(Long id);
     void updateById(Long id, CreateSenderRequest request);
     List<SenderDTO> findSendersByEventId(Long theID);
+    void updateLastUsedAt(Long senderId);
+    String findPasswordBySenderId(Long senderId);
 
 }

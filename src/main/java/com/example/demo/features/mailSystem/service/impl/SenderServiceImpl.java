@@ -10,6 +10,7 @@ import com.example.demo.features.mailSystem.service.SenderService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -41,10 +42,26 @@ public class SenderServiceImpl implements SenderService {
     public void save(CreateSenderRequest request) {
         Sender sender = new Sender();
         sender.setEmail(request.getEmail());
-        sender.setFname(request.getFname());
-        sender.setLname(request.getLname());
+        sender.setCreatedAt(LocalDateTime.now());
+        sender.setEncryptedPassword(request.getPassword());
+        sender.setLastUsedAt(LocalDateTime.now());
         sender.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         senderRepository.save(sender);
+    }
+
+    @Override
+    public void updateLastUsedAt(Long senderId) {
+        Sender sender = senderRepository.findById(senderId)
+                .orElseThrow(() -> new RuntimeException("Sender not found"));
+        sender.setLastUsedAt(LocalDateTime.now());
+        senderRepository.save(sender);
+    }
+
+    @Override
+    public String findPasswordBySenderId(Long senderId) {
+        Sender sender = senderRepository.findById(senderId)
+                .orElseThrow(() -> new RuntimeException("Sender not found"));
+        return sender.getEncryptedPassword();
     }
 
     @Override
@@ -59,8 +76,9 @@ public class SenderServiceImpl implements SenderService {
         Optional<Sender> senderer = senderRepository.findById(id);
         Sender theSender = senderer.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
         theSender.setEmail(request.getEmail());
-        theSender.setFname(request.getFname());
-        theSender.setLname(request.getLname());
+        theSender.setCreatedAt(LocalDateTime.now());
+        theSender.setEncryptedPassword(request.getPassword());
+        theSender.setLastUsedAt(LocalDateTime.now());
         theSender.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         senderRepository.save(theSender);
     }
