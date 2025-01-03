@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,14 +22,17 @@ public class Sender {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "fname")
-    private String fname;
-
-    @Column(name = "lname")
-    private String lname;
-
     @Column(name = "email")
     private String email;
+
+    @Column(name = "encrypted_password")
+    private String encryptedPassword;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "last_used_at")
+    private LocalDateTime lastUsedAt;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
