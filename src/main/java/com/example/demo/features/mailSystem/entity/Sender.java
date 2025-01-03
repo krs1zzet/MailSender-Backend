@@ -30,6 +30,10 @@ public class Sender {
     @Column(name = "email")
     private String email;
 
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
+
 
 
 
