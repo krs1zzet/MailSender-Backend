@@ -9,6 +9,7 @@ import java.util.List;
 public interface MailTemplateService {
     List<MailTemplateDTO> findAll();
     MailTemplateDTO findByID(Long theID);
+    List<MailTemplateDTO> findMailTemplatesByEventId(Long theID);
     void save(CreateMailTemplateRequest request);
     void deleteByID(Long id);
     void updateByID(Long id, CreateMailTemplateRequest request);
