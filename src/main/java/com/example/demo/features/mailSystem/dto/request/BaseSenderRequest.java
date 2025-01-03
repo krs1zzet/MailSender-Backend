@@ -9,8 +9,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class BaseMailTemplateRequest {
-    private String header;
-    private String body;
+public class BaseSenderRequest {
+    private String fname;
+    private String lname;
+    private String email;
     private Long eventId;
 }

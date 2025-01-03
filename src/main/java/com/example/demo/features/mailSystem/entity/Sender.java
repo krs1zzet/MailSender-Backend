@@ -13,8 +13,8 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table(name = "senderer")
-public class Senderer {
+@Table(name = "sender")
+public class Sender {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,5 +29,12 @@ public class Senderer {
 
     @Column(name = "email")
     private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
+
+
+
 
 }
