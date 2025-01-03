@@ -5,6 +5,7 @@ import com.example.demo.features.mailSystem.dto.SenderDTO;
 import com.example.demo.features.mailSystem.dto.converter.SenderDtoConverter;
 import com.example.demo.features.mailSystem.dto.request.CreateSenderRequest;
 import com.example.demo.features.mailSystem.repository.SenderRepository;
+import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.SenderService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,12 @@ public class SenderServiceImpl implements SenderService {
 
     private final SenderRepository senderRepository;
     private final SenderDtoConverter senderDtoConverter;
+    private final EventService eventService;
 
-    public SenderServiceImpl(SenderRepository senderRepository, SenderDtoConverter senderDtoConverter) {
+    public SenderServiceImpl(SenderRepository senderRepository, SenderDtoConverter senderDtoConverter, EventService eventService) {
         this.senderRepository = senderRepository;
         this.senderDtoConverter = senderDtoConverter;
+        this.eventService = eventService;
     }
 
 
@@ -40,6 +43,7 @@ public class SenderServiceImpl implements SenderService {
         sender.setEmail(request.getEmail());
         sender.setFname(request.getFname());
         sender.setLname(request.getLname());
+        sender.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         senderRepository.save(sender);
     }
 
@@ -57,6 +61,16 @@ public class SenderServiceImpl implements SenderService {
         theSender.setEmail(request.getEmail());
         theSender.setFname(request.getFname());
         theSender.setLname(request.getLname());
+        theSender.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         senderRepository.save(theSender);
+    }
+
+    @Override
+    public List<SenderDTO> findSendersByEventId(Long theID) {
+        List<Sender> senders = senderRepository.findByEventId(theID);
+        if (senders.isEmpty()) {
+            throw new RuntimeException("Did not find any senders for event id - " + theID);
+        }
+        return senderDtoConverter.convert(senders);
     }
 }
