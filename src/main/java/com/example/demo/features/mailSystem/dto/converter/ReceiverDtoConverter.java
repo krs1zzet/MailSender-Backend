@@ -14,7 +14,8 @@ public class ReceiverDtoConverter {
                 from.getFname(),
                 from.getLname(),
                 from.getEmail(),
-                from.getGroupName()
+                from.getGroupName(),
+                from.getEvent().getId()
         );
 
     }

@@ -13,4 +13,5 @@ public class BaseSenderRequest {
     private String fname;
     private String lname;
     private String email;
+    private Long eventId;
 }

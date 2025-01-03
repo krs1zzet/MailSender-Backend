@@ -12,7 +12,8 @@ public class MailTemplateDtoConverter {
         return new MailTemplateDTO(
                 from.getId(),
                 from.getHeader(),
-                from.getBody()
+                from.getBody(),
+                from.getEvent().getId()
         );
     }
 

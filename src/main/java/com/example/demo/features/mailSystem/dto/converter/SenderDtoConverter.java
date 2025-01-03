@@ -13,7 +13,8 @@ public class SenderDtoConverter {
                 from.getId(),
                 from.getFname(),
                 from.getLname(),
-                from.getEmail()
+                from.getEmail(),
+                from.getEvent().getId()
         );
     }
     public List<SenderDTO> convert (List<Sender> from){

@@ -12,4 +12,5 @@ import lombok.Setter;
 public class BaseMailTemplateRequest {
     private String header;
     private String body;
+    private Long eventId;
 }
