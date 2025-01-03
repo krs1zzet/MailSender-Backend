@@ -43,6 +43,8 @@ public class SenderServiceImpl implements SenderService {
         Sender sender = new Sender();
         sender.setEmail(request.getEmail());
         sender.setCreatedAt(LocalDateTime.now());
+        sender.setEncryptedPassword(request.getPassword());
+        sender.setLastUsedAt(LocalDateTime.now());
         sender.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         senderRepository.save(sender);
     }
@@ -53,6 +55,13 @@ public class SenderServiceImpl implements SenderService {
                 .orElseThrow(() -> new RuntimeException("Sender not found"));
         sender.setLastUsedAt(LocalDateTime.now());
         senderRepository.save(sender);
+    }
+
+    @Override
+    public String findPasswordBySenderId(Long senderId) {
+        Sender sender = senderRepository.findById(senderId)
+                .orElseThrow(() -> new RuntimeException("Sender not found"));
+        return sender.getEncryptedPassword();
     }
 
     @Override
@@ -67,6 +76,9 @@ public class SenderServiceImpl implements SenderService {
         Optional<Sender> senderer = senderRepository.findById(id);
         Sender theSender = senderer.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
         theSender.setEmail(request.getEmail());
+        theSender.setCreatedAt(LocalDateTime.now());
+        theSender.setEncryptedPassword(request.getPassword());
+        theSender.setLastUsedAt(LocalDateTime.now());
         theSender.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         senderRepository.save(theSender);
     }

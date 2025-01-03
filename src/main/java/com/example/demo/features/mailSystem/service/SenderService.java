@@ -13,5 +13,6 @@ public interface SenderService {
     void updateById(Long id, CreateSenderRequest request);
     List<SenderDTO> findSendersByEventId(Long theID);
     void updateLastUsedAt(Long senderId);
+    String findPasswordBySenderId(Long senderId);
 
 }
