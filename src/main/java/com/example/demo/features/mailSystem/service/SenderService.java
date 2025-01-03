@@ -11,4 +11,6 @@ public interface SenderService {
     void save(CreateSenderRequest request);
     void deleteById(Long id);
     void updateById(Long id, CreateSenderRequest request);
+    List<SenderDTO> findSendersByEventId(Long theID);
+
 }
