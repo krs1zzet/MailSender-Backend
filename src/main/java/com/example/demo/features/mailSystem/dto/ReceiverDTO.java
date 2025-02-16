@@ -17,4 +17,5 @@ public class ReceiverDTO {
     private String lname;
     private String email;
     private String groupName;
+    private Long eventId;
 }

@@ -4,5 +4,6 @@ import lombok.*;
 
 @Getter
 @Setter
-public class CreateSendererRequest extends BaseSendererRequest {
+public class CreateSenderRequest extends BaseSenderRequest {
+    private String password;
 }

@@ -30,5 +30,9 @@ public class Receiver {
     @Column(name = "group_name")
     private String groupName;
 
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
+
 
 }

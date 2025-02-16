@@ -8,7 +8,4 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateMailTemplateRequest extends BaseMailTemplateRequest {
-    public CreateMailTemplateRequest(String header, String body) {
-        super(header, body);
-    }
 }

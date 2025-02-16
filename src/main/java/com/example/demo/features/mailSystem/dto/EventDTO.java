@@ -7,13 +7,13 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class SendererDTO {
+@NoArgsConstructor
+@Setter
+@Getter
+public class EventDTO {
     private Long id;
-    private String fname;
-    private String lname;
-    private String email;
+    private String name;
+    private String description;
+    private String date;
 }

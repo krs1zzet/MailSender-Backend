@@ -1,13 +1,11 @@
 package com.example.demo.features.mailSystem.controller;
 
 import com.example.demo.features.mailSystem.dto.ReceiverDTO;
-import com.example.demo.features.mailSystem.dto.SendererDTO;
 import com.example.demo.features.mailSystem.dto.request.CreateReceiverRequest;
 import com.example.demo.features.mailSystem.service.ExcelService;
 import com.example.demo.features.mailSystem.service.ReceiverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +30,12 @@ public class ReceiverController {
     public ResponseEntity<List<ReceiverDTO>> findAll(){
         List<ReceiverDTO> receiverDTOList = receiverService.findAll();
         log.info("Finding all Receivers");
+        return ResponseEntity.ok(receiverDTOList);
+    }
+    @GetMapping("/receivers/{eventId}")
+    public ResponseEntity<List<ReceiverDTO>> findReceiversByEventId(@PathVariable Long eventId){
+        List<ReceiverDTO> receiverDTOList = receiverService.findReceiversByEventId(eventId);
+        log.info("Finding all Receivers by event id");
         return ResponseEntity.ok(receiverDTOList);
     }
 
