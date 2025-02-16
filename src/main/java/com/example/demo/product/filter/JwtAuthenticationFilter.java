@@ -30,52 +30,66 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-      @NonNull HttpServletRequest request,
-      @NonNull HttpServletResponse response,
-      @NonNull FilterChain filterChain
+          @NonNull HttpServletRequest request,
+          @NonNull HttpServletResponse response,
+          @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
 
     final String authHeader = request.getHeader("Authorization");
-    if (authHeader == null) {
+
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      logger.warn("JWT WARNING: Authorization header is missing or malformed.");
       filterChain.doFilter(request, response);
       return;
     }
+
     try {
-      if (authHeader.startsWith("Bearer ")) {
-        /// Extract the token from the header and remove the "Bearer " prefix
-        final String token = authHeader.substring(7);
-        /// Extract the user email from the token
-        final String userEmail = jwtService.extractUsername(token);
+      /// Extract the token from the header and remove the "Bearer " prefix
+      final String token = authHeader.substring(7);
+      final String userEmail = jwtService.extractUsername(token);
 
-        /// If the user email is not null and the user is not already authenticated
-        /// then authenticate the user
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-          /// Get user details from the database
-          UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-          /// Check if user details are valid and if the token is valid
-          if (jwtService.isTokenValid(token, userDetails)) {
-            /// Create an authentication token and set the user details
-            /// by passing the user details and the authorities
-            /// which are received from database
-            UsernamePasswordAuthenticationToken authToken = new
-                UsernamePasswordAuthenticationToken(
-                userDetails, null,
-                userDetails.getAuthorities()
-            );
-
-            /// Enforce the authentication token to have the details of the request
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            /// Update the security context with the authentication token
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-          }
-        }
+      if (userEmail == null) {
+        logger.error("JWT ERROR: Extracted username from token is null.");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token: username is missing.");
+        return;
       }
+
+      /// Check if user is already authenticated
+      if (SecurityContextHolder.getContext().getAuthentication() != null) {
+        filterChain.doFilter(request, response);
+        return;
+      }
+
+      /// Get user details from the database
+      UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+
+      if (userDetails == null) {
+        logger.error("JWT ERROR: UserDetailsService could not find user with email: {}", userEmail);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found.");
+        return;
+      }
+
+      /// Check if the token is valid
+      if (!jwtService.isTokenValid(token, userDetails)) {
+        logger.error("JWT ERROR: Token is invalid for user: {}", userEmail);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token.");
+        return;
+      }
+
+      /// Create and set authentication token
+      UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+              userDetails, null, userDetails.getAuthorities());
+
+      authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+      SecurityContextHolder.getContext().setAuthentication(authToken);
+
+      logger.info("JWT SUCCESS: User '{}' authenticated successfully.", userEmail);
+
       filterChain.doFilter(request, response);
+
     } catch (Exception e) {
-      logger.error("SECURITY_ERROR: An error occurred while processing the JWT. {}",
-      e.getMessage());
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access is denied");
+      logger.error("SECURITY_ERROR: An error occurred while processing the JWT. {}", e.getMessage());
+      response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access is denied.");
     }
   }
 }
