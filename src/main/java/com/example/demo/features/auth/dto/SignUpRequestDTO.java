@@ -15,4 +15,5 @@ public class SignUpRequestDTO {
   private final String fullName;
   @NotEmpty(message = "Purpose is required")
   private final String purpose;
+
 }

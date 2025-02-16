@@ -18,31 +18,32 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-  private final JwtAuthenticationFilter jwtFilter;
-  private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtFilter;
+    private final AuthenticationProvider authenticationProvider;
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    /// Disable CSRF
-    /// in general, it is not required for stateless REST services
-    http
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(
-                "/api/auth/sign-up",
-                "/api/auth/sign-in",
-                "/app_status/init",
-                "/",
-                "/v"
-            )
-            .permitAll()
-            .anyRequest()
-            .authenticated())
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        /// Disable CSRF
+        /// in general, it is not required for stateless REST services
+        http
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((requests) -> requests
+//                        .requestMatchers("/api/mails/").hasAnyRole("SIGNED")
+                        .requestMatchers("/api/receivers").authenticated()
+                        .requestMatchers("/api/receivers/**").authenticated()
+                        .requestMatchers("/api/mails").authenticated()
+                        .requestMatchers(
+                                "/api/auth/sign-up",
+                                "/api/auth/sign-in",
+                                "/app_status/init",
+                                "/"
+                        )
+                        .permitAll());
 
-        .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-        .authenticationProvider(authenticationProvider)
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-  }
+        return http.build();
+    }
 }
