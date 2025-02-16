@@ -39,7 +39,7 @@ public class MailServiceImpl implements MailService {
         SenderDTO senderDTO = senderService.findById(senderID);
         Sender sender = new Sender(senderDTO.getId(), senderDTO.getEmail(), senderDTO.getCreatedAt(), senderDTO.getLastUsedAt(), eventService.findById_ReturnEvent(senderDTO.getEventId()));
 
-        List<ReceiverDTO> receiverDTOS = receiverService.findAll();
+        List<ReceiverDTO> receiverDTOS = receiverIDs.stream().map(receiverService::findById).toList();
         List<Receiver> receiverList = receiverDTOS.stream().map(receiverDTO -> new Receiver(receiverDTO.getId(), receiverDTO.getFname(), receiverDTO.getLname(), receiverDTO.getEmail(), receiverDTO.getGroupName(), eventService.findById_ReturnEvent(receiverDTO.getEventId()))).toList();
 
         MailTemplateDTO mailTemplateDTO = mailTemplateService.findByID(mailTemplateID);
