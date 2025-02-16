@@ -14,4 +14,5 @@ public class BaseReceiverRequest {
     private String lname;
     private String email;
     private String groupName;
+    private Long eventId;
 }

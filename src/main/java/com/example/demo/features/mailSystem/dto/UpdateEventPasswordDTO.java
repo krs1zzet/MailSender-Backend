@@ -5,15 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
-@Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class MailTemplateDTO {
-    private Long id;
-    private String header;
-    private String body;
+@NoArgsConstructor
+@Setter
+@Getter
+public class UpdateEventPasswordDTO {
     private Long eventId;
+    private String newPassword;
 }

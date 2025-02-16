@@ -1,10 +1,14 @@
 package com.example.demo.features.mailSystem.service.impl;
 
+import com.example.demo.features.mailSystem.dto.converter.EventDtoConverter;
+import com.example.demo.features.mailSystem.entity.Event;
 import com.example.demo.features.mailSystem.entity.MailTemplate;
 import com.example.demo.features.mailSystem.dto.MailTemplateDTO;
 import com.example.demo.features.mailSystem.dto.converter.MailTemplateDtoConverter;
 import com.example.demo.features.mailSystem.dto.request.CreateMailTemplateRequest;
+import com.example.demo.features.mailSystem.repository.EventRepository;
 import com.example.demo.features.mailSystem.repository.MailTemplateRepository;
+import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.MailTemplateService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,11 +20,13 @@ import java.util.Optional;
 public class MailTemplateServiceImpl implements MailTemplateService {
     private final MailTemplateRepository mailTemplateRepository;
     private final MailTemplateDtoConverter mailTemplateDtoConverter;
+    private final EventService eventService;
 
 
-    public MailTemplateServiceImpl(MailTemplateRepository mailTemplateRepository, MailTemplateDtoConverter mailTemplateDtoConverter) {
+    public MailTemplateServiceImpl(MailTemplateRepository mailTemplateRepository, MailTemplateDtoConverter mailTemplateDtoConverter, EventService eventService) {
         this.mailTemplateRepository = mailTemplateRepository;
         this.mailTemplateDtoConverter = mailTemplateDtoConverter;
+        this.eventService = eventService;
     }
 
     @Override
@@ -41,6 +47,7 @@ public class MailTemplateServiceImpl implements MailTemplateService {
         MailTemplate theMailTemplate = new MailTemplate();
         theMailTemplate.setBody(request.getBody());
         theMailTemplate.setHeader(request.getHeader());
+        theMailTemplate.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         mailTemplateRepository.save(theMailTemplate);
     }
 
@@ -59,7 +66,17 @@ public class MailTemplateServiceImpl implements MailTemplateService {
         MailTemplate theMailTemplate = mail.orElseThrow(() -> new RuntimeException("did not find the mail - " + theID));
         theMailTemplate.setHeader(request.getHeader());
         theMailTemplate.setBody(request.getBody());
+        theMailTemplate.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         mailTemplateRepository.save(theMailTemplate);
+    }
+
+    @Override
+    public List<MailTemplateDTO> findMailTemplatesByEventId(Long theID) {
+        List<MailTemplate> mailTemplates = mailTemplateRepository.findByEventId(theID);
+        if(mailTemplates.isEmpty()){
+            throw new RuntimeException("Did not find mail templates with event id - " + theID);
+        }
+        return mailTemplateDtoConverter.convert(mailTemplates);
     }
 
 
