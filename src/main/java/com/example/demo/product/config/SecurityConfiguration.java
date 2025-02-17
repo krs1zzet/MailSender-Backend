@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -22,7 +23,7 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         /// Disable CSRF
         /// in general, it is not required for stateless REST services
         http
@@ -30,11 +31,20 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests((requests) -> requests
 //                        .requestMatchers("/api/mails/").hasAnyRole("SIGNED")
                         .requestMatchers("/api/receivers").authenticated()
                         .requestMatchers("/api/receivers/**").authenticated()
                         .requestMatchers("/api/mails").authenticated()
+                        .requestMatchers("/api/events").authenticated()
+                        .requestMatchers("/api/events/**").authenticated()
+                        .requestMatchers("/api/mailTemplates").authenticated()
+                        .requestMatchers("/api/mailTemplates/**").authenticated()
+                        .requestMatchers("/api/senders").authenticated()
+                        .requestMatchers("/api/senders/**").authenticated()
+                        .requestMatchers("/api/send-mail").authenticated()
+                        .requestMatchers("/api/send-mail/**").authenticated()
                         .requestMatchers(
                                 "/api/auth/sign-up",
                                 "/api/auth/sign-in",
