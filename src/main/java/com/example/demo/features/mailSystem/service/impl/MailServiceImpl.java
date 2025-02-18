@@ -1,5 +1,6 @@
 package com.example.demo.features.mailSystem.service.impl;
 
+import com.example.demo.features.mailSystem.dto.MailDTO;
 import com.example.demo.features.mailSystem.dto.MailTemplateDTO;
 import com.example.demo.features.mailSystem.dto.ReceiverDTO;
 import com.example.demo.features.mailSystem.dto.SenderDTO;
@@ -15,6 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,7 +37,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendMail(Long senderID, List<Long> receiverIDs, Long mailTemplateID) {
+    public MailDTO sendMail(Long senderID, List<Long> receiverIDs, Long mailTemplateID) {
 
         SenderDTO senderDTO = senderService.findById(senderID);
         Sender sender = new Sender(senderDTO.getId(), senderDTO.getEmail(), senderDTO.getCreatedAt(), senderDTO.getLastUsedAt(), eventService.findById_ReturnEvent(senderDTO.getEventId()));
@@ -44,6 +47,8 @@ public class MailServiceImpl implements MailService {
 
         MailTemplateDTO mailTemplateDTO = mailTemplateService.findByID(mailTemplateID);
         MailTemplate mailTemplate = new MailTemplate(mailTemplateDTO.getId(), mailTemplateDTO.getHeader(), mailTemplateDTO.getBody(), eventService.findById_ReturnEvent(mailTemplateDTO.getEventId()));
+
+        List<String> failedEmails = new ArrayList<>();
 
         for (Receiver receiver : receiverList) {
             try {
@@ -57,8 +62,14 @@ public class MailServiceImpl implements MailService {
                 System.out.println("Mail sent to: " + receiver.getEmail());
             } catch (Exception e) {
                 System.err.println("Failed to send mail to: " + receiver.getEmail() + ". Error: " + e.getMessage());
+                failedEmails.add(receiver.getEmail());
             }
         }
+        if (!failedEmails.isEmpty()) {
+            return new MailDTO(false, failedEmails, "Failed to send mail to some recipients.");
+        }
+
+        return new MailDTO(true, Collections.emptyList(), "All mails sent successfully.");
     }
 
     private JavaMailSenderImpl createJavaMailSender(String email, String appPassword) {
