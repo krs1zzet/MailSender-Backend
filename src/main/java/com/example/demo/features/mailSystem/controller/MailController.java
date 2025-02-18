@@ -1,7 +1,10 @@
 package com.example.demo.features.mailSystem.controller;
 
+import com.example.demo.features.mailSystem.dto.MailDTO;
 import com.example.demo.features.mailSystem.service.MailService;
+import com.example.demo.product.exceptions.generic.MailSendingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,15 +21,22 @@ public class MailController {
     }
 
     @PostMapping("/send-mail")
-    public ResponseEntity<Void> sendMail(@RequestParam Long senderID,
-                                         @RequestParam List<Long> receiverIDs,
-                                         @RequestParam Long mailTemplateID) {
+    public ResponseEntity<?> sendMail(@RequestParam Long senderID,
+                                      @RequestParam List<Long> receiverIDs,
+                                      @RequestParam Long mailTemplateID) {
         if (receiverIDs == null || receiverIDs.isEmpty()) {
-            throw new IllegalArgumentException("receiverIDs parameter is required and cannot be empty");
+            return ResponseEntity.badRequest().body("receiverIDs parameter is required and cannot be empty");
         }
-        mailService.sendMail(senderID, receiverIDs, mailTemplateID);
-        log.info("Mail sent");
-        return ResponseEntity.ok().build();
-    }
 
+        MailDTO response = mailService.sendMail(senderID, receiverIDs, mailTemplateID);
+
+        if (!response.isSuccess()) {
+            log.error("Mail sending failed for some recipients: {}", response.getFailedEmails());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+        log.info("Mail sent successfully");
+        return ResponseEntity.ok(response);
+
+    }
 }
