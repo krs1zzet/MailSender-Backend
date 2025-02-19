@@ -11,15 +11,18 @@ import com.example.demo.features.mailSystem.entity.MailTemplate;
 import com.example.demo.features.mailSystem.entity.Receiver;
 import com.example.demo.features.mailSystem.entity.Sender;
 import com.example.demo.features.mailSystem.service.*;
+import com.example.demo.product.exceptions.generic.mailTemplateExceptions.NotFoundExceptions.MailTemplateIdNotFoundException;
+import com.example.demo.product.exceptions.generic.receiverExceptions.NotFoundExceptions.ReceiverListIdNotFoundException;
+import com.example.demo.product.exceptions.generic.senderExceptions.BadRequestExceptions.SenderInvalidPasswordException;
+import com.example.demo.product.exceptions.generic.senderExceptions.BadRequestExceptions.SenderNullPasswordException;
+import com.example.demo.product.exceptions.generic.senderExceptions.NotFoundExceptions.SenderIdNotFoundException;
+import jakarta.mail.AuthenticationFailedException;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 @Service
 public class MailServiceImpl implements MailService {
@@ -40,12 +43,36 @@ public class MailServiceImpl implements MailService {
     public MailDTO sendMail(Long senderID, List<Long> receiverIDs, Long mailTemplateID) {
 
         SenderDTO senderDTO = senderService.findById(senderID);
+
+        if (senderDTO == null) {
+            throw new SenderIdNotFoundException(senderID);
+        }
+
         Sender sender = new Sender(senderDTO.getId(), senderDTO.getEmail(), senderDTO.getCreatedAt(), senderDTO.getLastUsedAt(), eventService.findById_ReturnEvent(senderDTO.getEventId()));
 
-        List<ReceiverDTO> receiverDTOS = receiverIDs.stream().map(receiverService::findById).toList();
+
+        List<ReceiverDTO> receiverDTOS = receiverIDs.stream()
+                .map(receiverService::findById)
+                .filter(Objects::nonNull)
+                .toList();
+
+// 🔹 Find missing IDs by filtering out those that were successfully retrieved
+        List<Long> missingReceiverIDs = receiverIDs.stream()
+                .filter(id -> receiverDTOS.stream().noneMatch(receiver -> receiver.getId().equals(id)))
+                .toList();
+
+        if (!missingReceiverIDs.isEmpty()) {
+            throw new ReceiverListIdNotFoundException(missingReceiverIDs); // ✅ Only pass missing IDs
+        }
+
+
+
         List<Receiver> receiverList = receiverDTOS.stream().map(receiverDTO -> new Receiver(receiverDTO.getId(), receiverDTO.getFname(), receiverDTO.getLname(), receiverDTO.getEmail(), receiverDTO.getGroupName(), eventService.findById_ReturnEvent(receiverDTO.getEventId()))).toList();
 
         MailTemplateDTO mailTemplateDTO = mailTemplateService.findByID(mailTemplateID);
+        if(mailTemplateDTO == null){
+            throw new MailTemplateIdNotFoundException(mailTemplateID);
+        }
         MailTemplate mailTemplate = new MailTemplate(mailTemplateDTO.getId(), mailTemplateDTO.getHeader(), mailTemplateDTO.getBody(), eventService.findById_ReturnEvent(mailTemplateDTO.getEventId()));
 
         List<String> failedEmails = new ArrayList<>();
@@ -53,6 +80,9 @@ public class MailServiceImpl implements MailService {
         for (Receiver receiver : receiverList) {
             try {
                 JavaMailSenderImpl mailSender = createJavaMailSender(senderDTO.getEmail(), senderService.findPasswordBySenderId(senderID));
+                if(mailSender.getPassword() == null || mailSender.getPassword().isEmpty()){
+                    throw new SenderNullPasswordException(senderID);
+                }
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setFrom(sender.getEmail());
                 mailMessage.setTo(receiver.getEmail());
@@ -60,7 +90,14 @@ public class MailServiceImpl implements MailService {
                 mailMessage.setText(mailTemplate.getBody());
                 mailSender.send(mailMessage);
                 System.out.println("Mail sent to: " + receiver.getEmail());
-            } catch (Exception e) {
+
+            } catch (MailAuthenticationException  e) { // 🔹 Catch authentication errors
+                throw new SenderInvalidPasswordException(senderID);
+
+            } catch (SenderNullPasswordException e){
+                throw e;
+            }
+            catch (Exception e) {
                 System.err.println("Failed to send mail to: " + receiver.getEmail() + ". Error: " + e.getMessage());
                 failedEmails.add(receiver.getEmail());
             }
@@ -78,13 +115,11 @@ public class MailServiceImpl implements MailService {
         mailSender.setPort(587);
         mailSender.setUsername(email); // Sender email
         mailSender.setPassword(appPassword); // App password
-
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.debug", "false");
-
         return mailSender;
 
     }

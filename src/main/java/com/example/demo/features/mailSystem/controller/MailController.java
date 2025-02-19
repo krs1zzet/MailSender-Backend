@@ -2,7 +2,6 @@ package com.example.demo.features.mailSystem.controller;
 
 import com.example.demo.features.mailSystem.dto.MailDTO;
 import com.example.demo.features.mailSystem.service.MailService;
-import com.example.demo.product.exceptions.generic.MailSendingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +23,6 @@ public class MailController {
     public ResponseEntity<?> sendMail(@RequestParam Long senderID,
                                       @RequestParam List<Long> receiverIDs,
                                       @RequestParam Long mailTemplateID) {
-        if (receiverIDs == null || receiverIDs.isEmpty()) {
-            return ResponseEntity.badRequest().body("receiverIDs parameter is required and cannot be empty");
-        }
 
         MailDTO response = mailService.sendMail(senderID, receiverIDs, mailTemplateID);
 
