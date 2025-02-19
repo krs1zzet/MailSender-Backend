@@ -33,25 +33,15 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests((requests) -> requests
-//                        .requestMatchers("/api/mails/").hasAnyRole("SIGNED")
-                        .requestMatchers("/api/receivers").authenticated()
-                        .requestMatchers("/api/receivers/**").authenticated()
-                        .requestMatchers("/api/mails").authenticated()
-                        .requestMatchers("/api/events").authenticated()
-                        .requestMatchers("/api/events/**").authenticated()
-                        .requestMatchers("/api/mailTemplates").authenticated()
-                        .requestMatchers("/api/mailTemplates/**").authenticated()
-                        .requestMatchers("/api/senders").authenticated()
-                        .requestMatchers("/api/senders/**").authenticated()
-                        .requestMatchers("/api/send-mail").authenticated()
-                        .requestMatchers("/api/send-mail/**").authenticated()
                         .requestMatchers(
                                 "/api/auth/sign-up",
                                 "/api/auth/sign-in",
                                 "/app_status/init",
                                 "/"
                         )
-                        .permitAll());
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated());
 
 
         return http.build();
