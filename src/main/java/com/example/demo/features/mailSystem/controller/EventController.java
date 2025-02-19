@@ -47,4 +47,11 @@ public class EventController {
         log.info("Event updated");
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/events/{id}")
+    public ResponseEntity<EventDTO> findById(@PathVariable Long id){
+        EventDTO eventDTO = eventService.findById(id);
+        log.info("Find event by id");
+        return ResponseEntity.ok(eventDTO);
+    }
 }
