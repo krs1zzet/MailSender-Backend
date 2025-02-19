@@ -1,15 +1,13 @@
 package com.example.demo.features.mailSystem.service.impl;
 
-import com.example.demo.features.mailSystem.dto.converter.EventDtoConverter;
-import com.example.demo.features.mailSystem.entity.Event;
 import com.example.demo.features.mailSystem.entity.MailTemplate;
 import com.example.demo.features.mailSystem.dto.MailTemplateDTO;
 import com.example.demo.features.mailSystem.dto.converter.MailTemplateDtoConverter;
 import com.example.demo.features.mailSystem.dto.request.CreateMailTemplateRequest;
-import com.example.demo.features.mailSystem.repository.EventRepository;
 import com.example.demo.features.mailSystem.repository.MailTemplateRepository;
 import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.MailTemplateService;
+import com.example.demo.product.exceptions.generic.mailTemplateExceptions.NotFoundExceptions.MailTemplateIdNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +33,9 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
 
     @Override
-    public MailTemplateDTO findByID(Long theID) {
-        Optional<MailTemplate> mail = mailTemplateRepository.findById(theID);
-        MailTemplate theMailTemplate = mail.orElseThrow(() -> new RuntimeException("Did not find mail id - " + theID));
+    public MailTemplateDTO findByID(Long id) {
+        Optional<MailTemplate> mail = mailTemplateRepository.findById(id);
+        MailTemplate theMailTemplate = mail.orElseThrow(() -> new MailTemplateIdNotFoundException(id));
         return mailTemplateDtoConverter.convert(theMailTemplate);
     }
 
@@ -53,17 +51,17 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
     @Transactional
     @Override
-    public void deleteByID(Long theID) {
-        Optional<MailTemplate> mail = mailTemplateRepository.findById(theID);
-        MailTemplate theMailTemplate = mail.orElseThrow(() -> new RuntimeException("did not find the mail - " + theID));
+    public void deleteByID(Long id) {
+        Optional<MailTemplate> mail = mailTemplateRepository.findById(id);
+        MailTemplate theMailTemplate = mail.orElseThrow(() -> new MailTemplateIdNotFoundException(id));
         mailTemplateRepository.deleteById(theMailTemplate.getId());
     }
 
     @Transactional
     @Override
-    public void updateByID(Long theID, CreateMailTemplateRequest request) {
-        Optional<MailTemplate> mail = mailTemplateRepository.findById(theID);
-        MailTemplate theMailTemplate = mail.orElseThrow(() -> new RuntimeException("did not find the mail - " + theID));
+    public void updateByID(Long id, CreateMailTemplateRequest request) {
+        Optional<MailTemplate> mail = mailTemplateRepository.findById(id);
+        MailTemplate theMailTemplate = mail.orElseThrow(() -> new MailTemplateIdNotFoundException(id));
         theMailTemplate.setHeader(request.getHeader());
         theMailTemplate.setBody(request.getBody());
         theMailTemplate.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
@@ -71,11 +69,9 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     }
 
     @Override
-    public List<MailTemplateDTO> findMailTemplatesByEventId(Long theID) {
-        List<MailTemplate> mailTemplates = mailTemplateRepository.findByEventId(theID);
-        if(mailTemplates.isEmpty()){
-            throw new RuntimeException("Did not find mail templates with event id - " + theID);
-        }
+    public List<MailTemplateDTO> findMailTemplatesByEventId(Long id) {
+        List<MailTemplate> mailTemplates = mailTemplateRepository.findByEventId(id);
+
         return mailTemplateDtoConverter.convert(mailTemplates);
     }
 

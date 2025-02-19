@@ -31,13 +31,13 @@ public class Event {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<MailTemplate> mailTemplates;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Receiver> receivers;
 
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Sender> senders;
 
 

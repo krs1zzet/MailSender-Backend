@@ -11,6 +11,7 @@ import com.example.demo.features.mailSystem.entity.Sender;
 import com.example.demo.features.mailSystem.repository.EventRepository;
 import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.MailTemplateService;
+import com.example.demo.product.exceptions.generic.eventExceptions.NotFoundExceptions.EventIdNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,14 +31,14 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO findById(Long id) {
         Optional<Event> eventDTO = eventRepository.findById(id);
-        Event event = eventDTO.orElseThrow(() -> new RuntimeException("Did not find event id - " + id));
+        Event event = eventDTO.orElseThrow(() -> new EventIdNotFoundException(id));
         return eventDtoConverter.convert(event);
     }
 
     @Override
     public Event findById_ReturnEvent(Long id) {
         Optional<Event> eventDTO = eventRepository.findById(id);
-        return eventDTO.orElseThrow(() -> new RuntimeException("Did not find event id - " + id));
+        return eventDTO.orElseThrow(() -> new EventIdNotFoundException(id));
     }
 
 
@@ -58,7 +59,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteById(Long id) {
         Optional<Event> event = eventRepository.findById(id);
-        Event theEvent = event.orElseThrow(() -> new RuntimeException("Did not find event id - " + id));
+        Event theEvent = event.orElseThrow(() -> new EventIdNotFoundException(id));
         eventRepository.deleteById(theEvent.getId());
 
     }
@@ -66,7 +67,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void updateById(Long id, CreateEventRequest request) {
         Optional<Event> event = eventRepository.findById(id);
-        Event theEvent = event.orElseThrow(() -> new RuntimeException("Did not find event id - " + id));
+        Event theEvent = event.orElseThrow(() -> new EventIdNotFoundException(id));
         theEvent.setName(request.getName());
         theEvent.setDescription(request.getDescription());
         theEvent.setDate(request.getDate());
