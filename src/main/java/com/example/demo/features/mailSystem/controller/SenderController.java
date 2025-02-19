@@ -3,6 +3,7 @@ package com.example.demo.features.mailSystem.controller;
 import com.example.demo.features.mailSystem.dto.request.CreateSenderRequest;
 import com.example.demo.features.mailSystem.service.SenderService;
 import com.example.demo.features.mailSystem.dto.SenderDTO;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class SenderController {
     }
 
     @PostMapping("/senders")
-    public ResponseEntity<Void> createSenderer(@RequestBody CreateSenderRequest request){
+    public ResponseEntity<Void> createSenderer(@Valid @RequestBody CreateSenderRequest request){
         senderService.save(request);
         log.info("Sender saved");
         return  ResponseEntity.ok().build();
