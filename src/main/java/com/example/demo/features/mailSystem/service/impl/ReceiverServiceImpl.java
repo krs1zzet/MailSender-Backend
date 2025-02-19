@@ -7,6 +7,8 @@ import com.example.demo.features.mailSystem.dto.ReceiverDTO;
 import com.example.demo.features.mailSystem.repository.ReceiverRepository;
 import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.ReceiverService;
+import com.example.demo.product.exceptions.generic.receiverExceptions.NotFoundExceptions.ReceiverIdNotFoundException;
+import com.example.demo.product.exceptions.generic.receiverExceptions.NotFoundExceptions.ReceiverListIdNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -41,14 +43,14 @@ public class ReceiverServiceImpl implements ReceiverService {
     @Override
     public void deleteByID(Long id) {
         Optional<Receiver> receiver = receiverRepository.findById(id);
-        Receiver theReceiver = receiver.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
+        Receiver theReceiver = receiver.orElseThrow(()-> new ReceiverIdNotFoundException(id));
         receiverRepository.deleteById(theReceiver.getId());
     }
 
     @Override
     public ReceiverDTO findById(Long id) {
         Optional<Receiver> receiver = receiverRepository.findById(id);
-        Receiver theReceiver = receiver.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
+        Receiver theReceiver = receiver.orElseThrow(()-> new ReceiverIdNotFoundException(id));
         return receiverDtoConverter.convert(theReceiver);
     }
 
@@ -59,9 +61,9 @@ public class ReceiverServiceImpl implements ReceiverService {
 
     @Transactional
     @Override
-    public void updateByID(Long theID, CreateReceiverRequest request) {
-        Optional<Receiver> receiver = receiverRepository.findById(theID);
-        Receiver theReceiver = receiver.orElseThrow(() -> new RuntimeException("did not find the mail - " + theID));
+    public void updateByID(Long id, CreateReceiverRequest request) {
+        Optional<Receiver> receiver = receiverRepository.findById(id);
+        Receiver theReceiver = receiver.orElseThrow(() -> new ReceiverIdNotFoundException(id));
         theReceiver.setFname(request.getFname());
         theReceiver.setLname(request.getLname());
         theReceiver.setEmail(request.getEmail());
@@ -70,10 +72,10 @@ public class ReceiverServiceImpl implements ReceiverService {
     }
 
     @Override
-    public List<ReceiverDTO> findReceiversByEventId(Long theID) {
-        List<Receiver> receivers = receiverRepository.findByEventId(theID);
+    public List<ReceiverDTO> findReceiversByEventId(Long id) {
+        List<Receiver> receivers = receiverRepository.findByEventId(id);
         if (receivers.isEmpty()) {
-            throw new RuntimeException("Did not find any receivers for event id - " + theID);
+            throw new ReceiverIdNotFoundException(id);
         }
         return receiverDtoConverter.convert(receivers);
     }

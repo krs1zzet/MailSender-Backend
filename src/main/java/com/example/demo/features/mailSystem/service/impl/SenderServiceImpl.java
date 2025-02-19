@@ -7,6 +7,7 @@ import com.example.demo.features.mailSystem.dto.request.CreateSenderRequest;
 import com.example.demo.features.mailSystem.repository.SenderRepository;
 import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.SenderService;
+import com.example.demo.product.exceptions.generic.senderExceptions.NotFoundExceptions.SenderIdNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -50,31 +51,31 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public void updateLastUsedAt(Long senderId) {
-        Sender sender = senderRepository.findById(senderId)
-                .orElseThrow(() -> new RuntimeException("Sender not found"));
+    public void updateLastUsedAt(Long id) {
+        Sender sender = senderRepository.findById(id)
+                .orElseThrow(() -> new SenderIdNotFoundException(id));
         sender.setLastUsedAt(LocalDateTime.now());
         senderRepository.save(sender);
     }
 
     @Override
-    public String findPasswordBySenderId(Long senderId) {
-        Sender sender = senderRepository.findById(senderId)
-                .orElseThrow(() -> new RuntimeException("Sender not found"));
+    public String findPasswordBySenderId(Long id) {
+        Sender sender = senderRepository.findById(id)
+                .orElseThrow(() -> new SenderIdNotFoundException(id));
         return sender.getEncryptedPassword();
     }
 
     @Override
     public void deleteById(Long id) {
         Optional<Sender> senderer = senderRepository.findById(id);
-        Sender theSender = senderer.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
+        Sender theSender = senderer.orElseThrow(()-> new SenderIdNotFoundException(id));
         senderRepository.deleteById(theSender.getId());
     }
     @Override
     @Transactional
     public void updateById(Long id, CreateSenderRequest request) {
         Optional<Sender> senderer = senderRepository.findById(id);
-        Sender theSender = senderer.orElseThrow(()-> new RuntimeException("did not find the id - "+ id));
+        Sender theSender = senderer.orElseThrow(()-> new SenderIdNotFoundException(id));
         theSender.setEmail(request.getEmail());
         theSender.setCreatedAt(LocalDateTime.now());
         theSender.setEncryptedPassword(request.getPassword());
@@ -84,10 +85,10 @@ public class SenderServiceImpl implements SenderService {
     }
 
     @Override
-    public List<SenderDTO> findSendersByEventId(Long theID) {
-        List<Sender> senders = senderRepository.findByEventId(theID);
+    public List<SenderDTO> findSendersByEventId(Long id) {
+        List<Sender> senders = senderRepository.findByEventId(id);
         if (senders.isEmpty()) {
-            throw new RuntimeException("Did not find any senders for event id - " + theID);
+            throw new SenderIdNotFoundException(id);
         }
         return senderDtoConverter.convert(senders);
     }
