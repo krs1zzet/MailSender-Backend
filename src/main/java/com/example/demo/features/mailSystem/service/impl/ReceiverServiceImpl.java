@@ -65,6 +65,12 @@ public class ReceiverServiceImpl implements ReceiverService {
         return receiverDtoConverter.convert(receiverRepository.findAll());
     }
 
+    @Override
+    public ReceiverDTO findByEmail(String email) {
+        Receiver receivers = receiverRepository.findByEmail(email);
+        return receiverDtoConverter.convert(receivers);
+    }
+
     @Transactional
     @Override
     public void updateByID(Long id, CreateReceiverRequest request) {
