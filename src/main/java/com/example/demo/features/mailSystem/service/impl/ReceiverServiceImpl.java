@@ -74,7 +74,9 @@ public class ReceiverServiceImpl implements ReceiverService {
         theReceiver.setLname(request.getLname());
         theReceiver.setEmail(request.getEmail());
         theReceiver.setGroupName(request.getGroupName());
-        theReceiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        if (request.getEventId() != null) {
+            theReceiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        }
     }
 
     @Override
