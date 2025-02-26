@@ -46,8 +46,8 @@ public class ReceiverController {
         return ResponseEntity.ok().build();
     }
     @PostMapping("/receivers/excel")
-    public ResponseEntity<Void> saveReceiversFromExcel(@RequestParam("file") MultipartFile file) throws IOException {
-        excelService.saveReceiversFromExcel(file);
+    public ResponseEntity<Void> saveReceiversFromExcel(@RequestParam("file") MultipartFile file,@RequestParam Long eventId) throws IOException {
+        excelService.saveReceiversFromExcel(file,eventId);
         log.info("Receivers saved from excel");
         return ResponseEntity.ok().build();
     }
