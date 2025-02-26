@@ -92,9 +92,6 @@ public class ReceiverServiceImpl implements ReceiverService {
     @Override
     public List<ReceiverDTO> findReceiversByEventId(Long id) {
         List<Receiver> receivers = receiverRepository.findByEventId(id);
-        if (receivers.isEmpty()) {
-            throw new ReceiverIdNotFoundException(id);
-        }
         return receiverDtoConverter.convert(receivers);
     }
 
