@@ -7,9 +7,13 @@ import com.example.demo.features.mailSystem.dto.ReceiverDTO;
 import com.example.demo.features.mailSystem.repository.ReceiverRepository;
 import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.ReceiverService;
+import com.example.demo.product.exceptions.errorMessages.ErrorCode;
+import com.example.demo.product.exceptions.generic.DataIntegrityException;
+import com.example.demo.product.exceptions.generic.receiverExceptions.DataIntegrityExceptions.ReceiverUniqueEmailException;
 import com.example.demo.product.exceptions.generic.receiverExceptions.NotFoundExceptions.ReceiverIdNotFoundException;
 import com.example.demo.product.exceptions.generic.receiverExceptions.NotFoundExceptions.ReceiverListIdNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
