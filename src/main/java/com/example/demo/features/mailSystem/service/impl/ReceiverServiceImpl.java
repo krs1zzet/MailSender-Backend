@@ -31,12 +31,18 @@ public class ReceiverServiceImpl implements ReceiverService {
     @Transactional
     @Override
     public void save(CreateReceiverRequest request) {
+
+        if (receiverRepository.existsByEmail(request.getEmail())) {
+            throw new ReceiverUniqueEmailException(request.getEmail());
+        }
         Receiver receiver = new Receiver();
         receiver.setEmail(request.getEmail());
         receiver.setLname(request.getLname());
         receiver.setFname(request.getFname());
         receiver.setGroupName(request.getGroupName());
-        receiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        if (request.getEventId() != null) {
+            receiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        }
         receiverRepository.save(receiver);
     }
     @Transactional
