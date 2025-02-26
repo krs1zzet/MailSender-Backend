@@ -16,6 +16,7 @@ public class validationMessages {
 
     public static final String RECEIVER_BLANK_EMAIL = "Receiver email cannot be blank";
     public static final String RECEIVER_INVALID_EMAIL = "Receiver email is invalid";
+    public static final String RECEIVER_BLANK_EVENT_ID = "Receiver event id cannot be blank";
 
     private validationMessages() {} // Prevent instantiation
 
