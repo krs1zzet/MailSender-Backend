@@ -28,7 +28,7 @@ public class MailTemplateController {
         return ResponseEntity.ok(mailTemplateDTOList);
     }
     @GetMapping("/mailTemplates/{eventId}")
-    public ResponseEntity<List<MailTemplateDTO>> findMailTemplateById(@Valid @PathVariable Long eventId){
+    public ResponseEntity<List<MailTemplateDTO>> findMailTemplateByEventId(@Valid @PathVariable Long eventId){
         List<MailTemplateDTO> mailTemplateDTOList = mailTemplateService.findMailTemplatesByEventId(eventId);
         log.info("Mails found by event id");
         return ResponseEntity.ok(mailTemplateDTOList);
