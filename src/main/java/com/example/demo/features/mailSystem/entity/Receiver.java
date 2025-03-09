@@ -24,7 +24,7 @@ public class Receiver {
     private String lname;
 
     @NonNull
-    @Column(name = "email")
+    @Column(name = "email",unique = true)
     private String email;
 
     @Column(name = "group_name")

@@ -27,6 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
+		<jar>${project.build.directory}/${project.build.finalName}.jar</jar>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
@@ -129,11 +130,74 @@
 	</dependencies>
 
 	<build>
+		<finalName>MailSender</finalName>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<layers>
+						<enabled>true</enabled>
+					</layers>
+				</configuration>
 			</plugin>
+
+			<!-- ✅ Jib Plugin (Fixed Image Name for Docker Hub) -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.4</version>
+					<configuration>
+						<container>
+							<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+						</container>
+						<to>
+							<image>cmdotenter/mailsender:latest</image>  <!-- Explicit repository -->
+						</to>
+					</configuration>
+			</plugin>
+
+			<!-- ✅ Maven Dependency Plugin (Removed Unnecessary Unpacking) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.springframework.boot</groupId>
+									<artifactId>spring-boot-starter</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- ✅ Maven Compiler Plugin (No Change Needed) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 

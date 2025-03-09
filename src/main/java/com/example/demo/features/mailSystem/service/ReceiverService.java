@@ -14,6 +14,7 @@ public interface ReceiverService {
      List<ReceiverDTO> findAll();
      void updateByID(Long id, CreateReceiverRequest request);
      List<ReceiverDTO> findReceiversByEventId(Long theID);
+      ReceiverDTO findByEmail(String email);
     }
 
 

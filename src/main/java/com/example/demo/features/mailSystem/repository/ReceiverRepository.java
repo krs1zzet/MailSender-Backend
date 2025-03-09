@@ -12,5 +12,7 @@ import java.util.List;
 public interface ReceiverRepository extends JpaRepository<Receiver,Long> {
     @Query("SELECT mt FROM Receiver mt WHERE mt.event.id = :eventId")
     List<Receiver> findByEventId(Long eventId);
+    boolean existsByEmail(String email);
+    Receiver findByEmail(String email);
 
 }

@@ -87,9 +87,6 @@ public class SenderServiceImpl implements SenderService {
     @Override
     public List<SenderDTO> findSendersByEventId(Long id) {
         List<Sender> senders = senderRepository.findByEventId(id);
-        if (senders.isEmpty()) {
-            throw new SenderIdNotFoundException(id);
-        }
         return senderDtoConverter.convert(senders);
     }
 }

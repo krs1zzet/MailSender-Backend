@@ -3,6 +3,7 @@ package com.example.demo.product.exceptions;
 import com.example.demo.product.exceptions.dto.ErrorResponseDTO;
 import com.example.demo.product.exceptions.generic.BadRequestException;
 import com.example.demo.product.exceptions.generic.NotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -66,6 +67,18 @@ public class GlobalExceptionHandler {
                 Collections.singletonList(ex.getMessage())
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ErrorResponseDTO body = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                "Data integrity violation",
+                Collections.singletonList(ex.getMessage())
+        );
+
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 
 }

@@ -71,7 +71,6 @@ public class MailTemplateServiceImpl implements MailTemplateService {
     @Override
     public List<MailTemplateDTO> findMailTemplatesByEventId(Long id) {
         List<MailTemplate> mailTemplates = mailTemplateRepository.findByEventId(id);
-
         return mailTemplateDtoConverter.convert(mailTemplates);
     }
 

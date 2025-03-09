@@ -5,5 +5,5 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface ExcelService {
-    void saveReceiversFromExcel(MultipartFile file) throws IOException;
+    void saveReceiversFromExcel(MultipartFile file,Long eventId) throws IOException;
 }

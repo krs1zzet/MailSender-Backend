@@ -7,9 +7,13 @@ import com.example.demo.features.mailSystem.dto.ReceiverDTO;
 import com.example.demo.features.mailSystem.repository.ReceiverRepository;
 import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.ReceiverService;
+import com.example.demo.product.exceptions.errorMessages.ErrorCode;
+import com.example.demo.product.exceptions.generic.DataIntegrityException;
+import com.example.demo.product.exceptions.generic.receiverExceptions.DataIntegrityExceptions.ReceiverUniqueEmailException;
 import com.example.demo.product.exceptions.generic.receiverExceptions.NotFoundExceptions.ReceiverIdNotFoundException;
 import com.example.demo.product.exceptions.generic.receiverExceptions.NotFoundExceptions.ReceiverListIdNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,12 +35,18 @@ public class ReceiverServiceImpl implements ReceiverService {
     @Transactional
     @Override
     public void save(CreateReceiverRequest request) {
+
+        if (receiverRepository.existsByEmail(request.getEmail())) {
+            throw new ReceiverUniqueEmailException(request.getEmail());
+        }
         Receiver receiver = new Receiver();
         receiver.setEmail(request.getEmail());
         receiver.setLname(request.getLname());
         receiver.setFname(request.getFname());
         receiver.setGroupName(request.getGroupName());
-        receiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        if (request.getEventId() != null) {
+            receiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        }
         receiverRepository.save(receiver);
     }
     @Transactional
@@ -59,6 +69,12 @@ public class ReceiverServiceImpl implements ReceiverService {
         return receiverDtoConverter.convert(receiverRepository.findAll());
     }
 
+    @Override
+    public ReceiverDTO findByEmail(String email) {
+        Receiver receivers = receiverRepository.findByEmail(email);
+        return receiverDtoConverter.convert(receivers);
+    }
+
     @Transactional
     @Override
     public void updateByID(Long id, CreateReceiverRequest request) {
@@ -68,15 +84,14 @@ public class ReceiverServiceImpl implements ReceiverService {
         theReceiver.setLname(request.getLname());
         theReceiver.setEmail(request.getEmail());
         theReceiver.setGroupName(request.getGroupName());
-        theReceiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        if (request.getEventId() != null) {
+            theReceiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
+        }
     }
 
     @Override
     public List<ReceiverDTO> findReceiversByEventId(Long id) {
         List<Receiver> receivers = receiverRepository.findByEventId(id);
-        if (receivers.isEmpty()) {
-            throw new ReceiverIdNotFoundException(id);
-        }
         return receiverDtoConverter.convert(receivers);
     }
 
