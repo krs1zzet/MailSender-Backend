@@ -1,5 +1,6 @@
 package com.example.demo.product.filter;
 
+import com.example.demo.features.auth.repository.TokenBlacklistRepository;
 import com.example.demo.features.auth.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,6 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtService jwtService;
   private final UserDetailsService userDetailsService;
   private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+  private final TokenBlacklistRepository tokenBlacklistRepository;
 
   @Override
   protected void doFilterInternal(
@@ -46,6 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     try {
       /// Extract the token from the header and remove the "Bearer " prefix
       final String token = authHeader.substring(7);
+      // 🚨 Reject blacklisted tokens
+      if (tokenBlacklistRepository.existsByToken(token)) {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted.");
+        return;
+      }
       final String userEmail = jwtService.extractUsername(token);
 
       if (userEmail == null) {
