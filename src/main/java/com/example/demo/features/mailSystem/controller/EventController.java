@@ -20,9 +20,15 @@ public class EventController {
         this.eventService = eventService;
     }
 
+//    @GetMapping("/events")
+//    public ResponseEntity<List<EventDTO>> findAll(){
+//        List<EventDTO> eventDTOList = eventService.findAll();
+//        log.info("Find all events");
+//        return ResponseEntity.ok(eventDTOList);
+//    }
     @GetMapping("/events")
     public ResponseEntity<List<EventDTO>> findAll(){
-        List<EventDTO> eventDTOList = eventService.findAll();
+        List<EventDTO> eventDTOList = eventService.findEventsBySignedUser();
         log.info("Find all events");
         return ResponseEntity.ok(eventDTOList);
     }
