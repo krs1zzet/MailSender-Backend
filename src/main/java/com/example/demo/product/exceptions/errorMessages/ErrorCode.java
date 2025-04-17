@@ -12,6 +12,8 @@ public enum ErrorCode {
 
     EVENT_NOT_FOUND("EV001","EVENT_NOT_FOUND with id: %s"),
 
+    PARTICIPATION_NOT_FOUND("PT001","PARTICIPATION_NOT_FOUND with id: %s"),
+
 
     DATA_INTEGRITY_VIOLATION("DATA_INTEGRITY_VIOLATION","Data integrity violation");
 
