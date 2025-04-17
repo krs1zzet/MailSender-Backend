@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -39,5 +41,21 @@ public class AuthController {
             SignInRequestDTO request) {
         return ResponseEntity.ok(authService.signIn(request));
     }
+
+    @PostMapping("/sign-out")
+    public ResponseEntity<Void> signOut(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+
+        if (token == null || token.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Trim the token to remove any unwanted spaces or newlines
+        token = token.trim();
+
+        authService.signOut(token);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api")
 public class UserController {
 
   private final UserService userService;
@@ -23,7 +23,7 @@ public class UserController {
   }
 
   @GetMapping("/profile/{id}")
-  public ResponseEntity<UserEntity> getUserProfile(@PathVariable Integer id) {
+  public ResponseEntity<UserEntity> getUserProfile(@PathVariable Long id) {
     UserEntity user = userService.findById(id);
     return new ResponseEntity<>(user, HttpStatus.OK);
   }

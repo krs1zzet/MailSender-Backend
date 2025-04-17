@@ -11,4 +11,6 @@ public interface AuthService {
   SignUpResponseDTO signUp(SignUpRequestDTO request);
 
   SignInResponseDTO signIn(SignInRequestDTO request);
+
+   void signOut(String token);
 }

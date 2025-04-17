@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "event")
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,6 +40,9 @@ public class Event {
 
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Sender> senders;
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Participation> participations;
 
 
 }

@@ -17,4 +17,7 @@ public interface EventService {
     void deleteById(Long id);
     void updateById(Long id, CreateEventRequest request);
     Event findById_ReturnEvent(Long id);
+    List<EventDTO> findByUserIdReturnEventDTO(long userId);
+    List<EventDTO>findEventsBySignedUser();
+
 }

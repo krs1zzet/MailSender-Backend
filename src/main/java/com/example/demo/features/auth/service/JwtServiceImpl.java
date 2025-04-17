@@ -1,5 +1,6 @@
 package com.example.demo.features.auth.service;
 
+import com.example.demo.features.auth.repository.TokenBlacklistRepository;
 import com.example.demo.features.user.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +23,13 @@ public class JwtServiceImpl implements JwtService {
   @Value("${jwt.secret}")
   private String SECRET_KEY;
 
-  public String extractUsername(String token) {
+    private final TokenBlacklistRepository tokenBlacklistRepository;
+
+    public JwtServiceImpl(TokenBlacklistRepository tokenBlacklistRepository) {
+        this.tokenBlacklistRepository = tokenBlacklistRepository;
+    }
+
+    public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
   }
 
@@ -55,15 +62,18 @@ public class JwtServiceImpl implements JwtService {
       String token,
       UserDetails userDetails) {
     final String username = extractUsername(token);
+    if (tokenBlacklistRepository.existsByToken(token)) {
+      return false;
+    }
     return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
   }
 
-  private boolean isTokenExpired(String token) {
+  public boolean isTokenExpired(String token) {
     assert extractExpiration(token) != null;
     return extractExpiration(token).before(new Date());
   }
 
-  private Date extractExpiration(String token) {
+  public Date extractExpiration(String token) {
     return extractClaim(token, Claims::getExpiration);
   }
 

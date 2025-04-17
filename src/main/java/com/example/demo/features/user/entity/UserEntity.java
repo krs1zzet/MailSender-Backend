@@ -1,5 +1,6 @@
 package com.example.demo.features.user.entity;
 
+import com.example.demo.features.mailSystem.entity.Participation;
 import com.example.demo.features.user.enums.Roles;
 import com.example.demo.features.user.enums.UsagePurpose;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -59,6 +60,10 @@ public class UserEntity implements UserDetails {
   @JsonIgnore
   @Column(name = "usage_purpose")
   private UsagePurpose usagePurpose;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<Participation> participations;
 
   @Column(name = "created_at")
   private Timestamp createdAt;

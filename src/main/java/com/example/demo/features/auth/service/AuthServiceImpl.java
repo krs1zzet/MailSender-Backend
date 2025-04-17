@@ -5,17 +5,21 @@ import com.example.demo.features.auth.dto.SignInRequestDTO;
 import com.example.demo.features.auth.dto.SignInResponseDTO;
 import com.example.demo.features.auth.dto.SignUpRequestDTO;
 import com.example.demo.features.auth.dto.SignUpResponseDTO;
+import com.example.demo.features.auth.entity.BlacklistedToken;
+import com.example.demo.features.auth.repository.TokenBlacklistRepository;
 import com.example.demo.features.user.entity.UserEntity;
 import com.example.demo.features.user.enums.Roles;
 import com.example.demo.features.user.enums.UsagePurpose;
 import com.example.demo.features.user.service.UserService;
 import com.example.demo.product.exceptions.user.EmailAlreadyExistsException;
+import lombok.Data;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -26,13 +30,15 @@ public class AuthServiceImpl implements AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final TokenBlacklistRepository tokenBlacklistRepository;
 
   public AuthServiceImpl(UserService userService, PasswordEncoder passwordEncoder,
-      JwtService jwtService, AuthenticationManager authenticationManager) {
+                         JwtService jwtService, AuthenticationManager authenticationManager, TokenBlacklistRepository tokenBlacklistRepository) {
     this.userService = userService;
     this.passwordEncoder = passwordEncoder;
     this.jwtService = jwtService;
     this.authenticationManager = authenticationManager;
+    this.tokenBlacklistRepository = tokenBlacklistRepository;
   }
 
   public SignUpResponseDTO signUp(SignUpRequestDTO request) {
@@ -79,5 +85,19 @@ public class AuthServiceImpl implements AuthService {
         .user(user)
         .build();
   }
+
+  @Override
+  public void signOut(String token) {
+    if (token == null || token.isBlank()) {
+      throw new IllegalArgumentException("Token is required for logout");
+    }
+
+    BlacklistedToken blacklistedToken = BlacklistedToken.builder()
+            .token(token)
+            .build();
+
+    tokenBlacklistRepository.save(blacklistedToken);
+  }
+
 
 }
