@@ -7,11 +7,10 @@ spring:
     hibernate:
       ddl-auto: none
       show_sql: true
-  datasource:
-    url: jdbc:postgresql://localhost:5432/MailOtomation
-    username: postgres
-    password: 1234
-
+    datasource:
+      url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/text2sql}
+      username: ${SPRING_DATASOURCE_USERNAME:postgres}
+      password: ${SPRING_DATASOURCE_PASSWORD:1234}
 version: 1
 
 management:
