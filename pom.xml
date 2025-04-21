@@ -162,30 +162,6 @@
 					</configuration>
 			</plugin>
 
-			<!-- ✅ Maven Dependency Plugin (Removed Unnecessary Unpacking) -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.springframework.boot</groupId>
-									<artifactId>spring-boot-starter</artifactId>
-									<version>${project.version}</version>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- ✅ Maven Compiler Plugin (No Change Needed) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

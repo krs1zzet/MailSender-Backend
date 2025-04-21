@@ -1,0 +1,42 @@
+version: "3.0"
+services:
+  db:
+    image: postgres:14.17
+    container_name: mail_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: text2sql
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./src/main/resources/data:/var/lib/postgresql/data
+      - ./src/main/resources/init:/docker-entrypoint-initdb.d
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8082:8080"
+  mailSender:
+    build: .
+    image: mailsender
+    container_name: mailsender
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/text2sql
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+  frontend:
+    build:
+      context: /Users/izzettinkarasayar/MailSender-Frontend
+    container_name: react_frontend
+    ports:
+      - 3000:80
+    depends_on:
+      - mailSender
+    restart:
+      always

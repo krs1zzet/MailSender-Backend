@@ -1,0 +1,23 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+      show_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/MailOtomation
+    username: postgres
+    password: 1234
+
+version: 1
+
+management:
+  health:
+    mail:
+      enabled: false
+
+jwt:
+  secret: ${JWT_SECRET:CW14ueQBqU0Flp50ImANkSps0Z3Qr6df7p8F40sqDQI=}
