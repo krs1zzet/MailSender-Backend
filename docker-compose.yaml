@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: text2sql
+      POSTGRES_DB: MailOtomation
     ports:
       - "5432:5432"
     volumes:
@@ -27,7 +27,7 @@ services:
       - db
 
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/text2sql
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/MailOtomation
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 1234
 #  frontend:
