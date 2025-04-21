@@ -40,3 +40,4 @@ services:
 #      - mailSender
 #    restart:
 #      always
+#    environment:
