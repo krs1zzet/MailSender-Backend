@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-        .allowedOrigins("localhost:8080")
+        .allowedOrigins("localhost:8080","fastidious-queijadas-9bb76b.netlify.app","localhost:3000")
             .allowedOrigins("http://localhost:3000")// Allowed frontend origin
 
         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
