@@ -1,0 +1,2 @@
+ALTER TABLE users DROP CONSTRAINT uk6dotkott2kjsp8vw4d0m25fb7;
+DROP TABLE test_flyway;
