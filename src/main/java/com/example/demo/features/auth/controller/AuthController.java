@@ -54,10 +54,6 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("hello-sabri")
-    public ResponseEntity<String> hello(){
-        return ResponseEntity.ok("hello");
-    }
 
 
 }
