@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(
+                                "/api/auth/hello-sabri",
                                 "/api/auth/sign-up",
                                 "/api/auth/sign-in",
                                 "/app_status/init",
