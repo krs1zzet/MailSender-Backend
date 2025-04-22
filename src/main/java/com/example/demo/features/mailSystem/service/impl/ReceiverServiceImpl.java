@@ -36,9 +36,7 @@ public class ReceiverServiceImpl implements ReceiverService {
     @Override
     public void save(CreateReceiverRequest request) {
 
-        if (receiverRepository.existsByEmail(request.getEmail())) {
-            throw new ReceiverUniqueEmailException(request.getEmail());
-        }
+
         Receiver receiver = new Receiver();
         receiver.setEmail(request.getEmail());
         receiver.setLname(request.getLname());

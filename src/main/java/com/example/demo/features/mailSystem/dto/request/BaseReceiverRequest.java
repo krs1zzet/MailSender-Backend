@@ -17,7 +17,7 @@ public class BaseReceiverRequest {
     private String lname;
 
     @NotBlank(message = validationMessages.RECEIVER_BLANK_EMAIL)
-    @Email(message = validationMessages.RECEIVER_INVALID_EMAIL)
+//    @Email(message = validationMessages.RECEIVER_INVALID_EMAIL)
     private String email;
 
     private String groupName;
