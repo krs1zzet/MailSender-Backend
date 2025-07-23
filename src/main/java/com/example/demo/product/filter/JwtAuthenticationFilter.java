@@ -36,7 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           "/api/auth/sign-up",
           "/api/auth/sign-in",
           "/app_status/init",
-          "/"
+          "/",
+          "/favicon.ico" // Tarayıcının otomatik favicon isteği için eklendi
   );
 
   @Override
