@@ -19,7 +19,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
   private final TokenBlacklistRepository tokenBlacklistRepository;
 
+  // Herkese açık, token gerektirmeyen yolların listesi
+  private static final List<String> PERMIT_ALL_PATHS = Arrays.asList(
+          "/api/auth/sign-up",
+          "/api/auth/sign-in",
+          "/app_status/init",
+          "/"
+  );
+
   @Override
   protected void doFilterInternal(
           @NonNull HttpServletRequest request,
@@ -37,11 +46,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
 
+    // --- YENİ EKLENEN KONTROL BLOĞU ---
+    final String path = request.getServletPath();
+
+    // Eğer istek, herkese açık yollardan birine yapılıyorsa,
+    // token kontrolü yapmadan bir sonraki filtreye geç.
+    if (PERMIT_ALL_PATHS.contains(path)) {
+      filterChain.doFilter(request, response);
+      return; // Filtreyi burada sonlandır ve devam et
+    }
+    // --- KONTROL BLOĞU BİTİŞİ ---
+
+
     final String authHeader = request.getHeader("Authorization");
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      logger.warn("JWT WARNING: Authorization header is missing or malformed.");
-      filterChain.doFilter(request, response);
+      logger.warn("JWT WARNING: Authorization header is missing or malformed for protected path: {}", path);
+      // Herkese açık olmayan bir yol için token yoksa isteği burada kesmek daha güvenli olabilir.
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing or malformed.");
       return;
     }
 
