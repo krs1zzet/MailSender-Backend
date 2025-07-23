@@ -47,7 +47,7 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
 
-        // Trim the token to remove any unwanted spaces or newlines
+        // Trim the token to remove any unwanted spaces or newlinesa
         token = token.trim();
 
         authService.signOut(token);
