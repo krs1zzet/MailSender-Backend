@@ -1,50 +1,64 @@
 package com.example.demo.features.user.controller;
 
 
-import com.example.demo.features.user.dto.FullNameRequestDTO;
-import com.example.demo.features.user.dto.UsagePurposeRequestDTO;
-import com.example.demo.features.user.entity.UserEntity;
+import com.example.demo.features.user.dto.UserDTO;
+import com.example.demo.features.user.dto.request.CreateUserRequest;
+import com.example.demo.features.user.dto.request.UpdateUserRequest;
 import com.example.demo.features.user.service.UserService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class UserController {
 
-  private final UserService userService;
+    private final UserService userService;
 
-  @Autowired
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
 
-  @GetMapping("/profile/{id}")
-  public ResponseEntity<UserEntity> getUserProfile(@PathVariable Long id) {
-    UserEntity user = userService.findById(id);
-    return new ResponseEntity<>(user, HttpStatus.OK);
-  }
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody CreateUserRequest request) {
+        log.info("Role created with name : {}", request.getUsername());
+        userService.save(request);
+        return ResponseEntity.ok().build();
+    }
 
-  @PostMapping("/full-name")
-  public ResponseEntity<Void> updateUserName(
-      @RequestBody
-      @Valid
-      FullNameRequestDTO updateFullName
-  ) {
-    userService.updateFullName(updateFullName);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
 
-  @PostMapping("/usage-purpose")
-  public ResponseEntity<Void> updateUserPurpose(
-      @RequestBody
-      @Valid
-      UsagePurposeRequestDTO usagePurposeRequest
-  ) {
-    userService.updateUserPurpose(usagePurposeRequest);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAll() {
+        log.info("Get all users");
+        return ResponseEntity.ok(userService.findAllReturnListUserDTO());
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
+        log.info("Get user with id : {}", id);
+        return ResponseEntity.ok(userService.findByUserIdReturnUserDTO(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        log.info("Delete user with id : {}", id);
+        userService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateById(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
+        log.info("Update user with id : {}", id);
+        userService.updateById(id, request );
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        return ResponseEntity.ok(userService.getCurrentUser());
+    }
+
 }

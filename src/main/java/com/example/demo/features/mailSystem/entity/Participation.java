@@ -1,6 +1,6 @@
 package com.example.demo.features.mailSystem.entity;
 
-import com.example.demo.features.user.entity.UserEntity;
+import com.example.demo.features.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class Participation {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private User user;
 
 
 }

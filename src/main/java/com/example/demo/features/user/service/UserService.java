@@ -1,27 +1,34 @@
 package com.example.demo.features.user.service;
 
 
-import com.example.demo.features.user.dto.FullNameRequestDTO;
-import com.example.demo.features.user.dto.UsagePurposeRequestDTO;
-import com.example.demo.features.user.entity.UserEntity;
-import com.example.demo.features.user.repo.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+
+import com.example.demo.features.user.dto.UserDTO;
+import com.example.demo.features.user.dto.request.CreateUserRequest;
+import com.example.demo.features.user.dto.request.UpdateUserRequest;
+import com.example.demo.features.user.entity.User;
+
+import java.util.List;
 
 public interface UserService {
 
-  UserEntity findByEmail(String email);
+    void save(CreateUserRequest request);
 
-  UserEntity findById(Long id);
+    void updateById(Long id, UpdateUserRequest request);
 
-  void saveUser(UserEntity user);
+    void deleteById(Long id);
 
-  void updateFullName(FullNameRequestDTO fullName);
+    List<UserDTO> findAllReturnListUserDTO();
 
-  boolean existsByEmail(String email);
+    User findByUsernameReturnUser(String username);
+    User findByIdReturnUser(Long id);
 
-  void updateUserPurpose(UsagePurposeRequestDTO userPurposeRequest);
+    UserDTO findByUserIdReturnUserDTO(Long id);
 
-  UserEntity findAuthenticatedUser();
+    UserDTO findByUsernameReturnUserDTO(String username);
+
+    UserDTO getCurrentUser();
+    User getCurrentUserReturnUser();
+
+    boolean existByUsername(String username);
 }

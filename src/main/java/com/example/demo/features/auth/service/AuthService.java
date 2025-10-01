@@ -1,16 +1,12 @@
 package com.example.demo.features.auth.service;
 
 
-import com.example.demo.features.auth.dto.SignInRequestDTO;
-import com.example.demo.features.auth.dto.SignInResponseDTO;
-import com.example.demo.features.auth.dto.SignUpRequestDTO;
-import com.example.demo.features.auth.dto.SignUpResponseDTO;
+import com.example.demo.features.auth.dto.request.signInRequest;
+import com.example.demo.features.auth.dto.request.signUpRequest;
+import com.example.demo.features.auth.dto.signInDTO;
+import com.example.demo.features.auth.dto.signUpDTO;
 
 public interface AuthService {
-
-  SignUpResponseDTO signUp(SignUpRequestDTO request);
-
-  SignInResponseDTO signIn(SignInRequestDTO request);
-
-   void signOut(String token);
+    signUpDTO signUp(signUpRequest request);
+    signInDTO signIn(signInRequest request);
 }

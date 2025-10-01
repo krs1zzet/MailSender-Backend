@@ -12,8 +12,8 @@ import com.example.demo.features.mailSystem.repository.EventRepository;
 import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.MailTemplateService;
 import com.example.demo.features.mailSystem.service.ParticipationService;
-import com.example.demo.features.user.entity.UserEntity;
-import com.example.demo.features.user.repo.UserRepository;
+import com.example.demo.features.user.dto.UserDTO;
+import com.example.demo.features.user.entity.User;
 import com.example.demo.features.user.service.UserService;
 import com.example.demo.product.exceptions.generic.eventExceptions.NotFoundExceptions.EventIdNotFoundException;
 import jakarta.transaction.Transactional;
@@ -65,7 +65,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDTO> findEventsBySignedUser() {
-        UserEntity user = userService.findAuthenticatedUser();
+        User user = userService.getCurrentUserReturnUser();
         log.info("User found: {}", user.getUsername());
         List<Long> eventIds = participationService.findEventIdsByUserId(user.getId());
         return eventIds.stream().map(this::findById).toList();
@@ -84,7 +84,7 @@ public class EventServiceImpl implements EventService {
         event.setName(request.getName());
         event.setDescription(request.getDescription());
         event.setDate(request.getDate());
-        UserEntity user = userService.findAuthenticatedUser();
+        User user = userService.getCurrentUserReturnUser();
         eventRepository.save(event);
 
         participationService.save(user,event);

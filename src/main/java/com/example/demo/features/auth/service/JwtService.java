@@ -1,35 +1,20 @@
 package com.example.demo.features.auth.service;
 
-import com.example.demo.features.user.entity.UserEntity;
-import io.jsonwebtoken.Claims;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Optional;
 
-@Service
 public interface JwtService {
 
-  String extractUsername(String token);
+    String generate(String subject);
+    String generate(String subject, Map<String,Object> claims);
 
-  <T> T extractClaim(
-      String token,
-      Function<Claims, T> claimsResolver);
+    String generateUntil(String subject, Map<String,Object> claims, Instant expiresAt);
 
-  String generateToken(UserEntity user);
-
-  String generateToken(
-      Map<String, Object> extraClaims,
-      UserEntity user);
-
-  boolean isTokenValid(
-      String token,
-      UserDetails userDetails);
-
-    boolean isTokenExpired(String token);
-    Date extractExpiration(String token);
+    Optional<String> getSubject(String token);
+    Optional<Instant> getExpiration(String token);
+    boolean isValid(String token);
 
 
 }

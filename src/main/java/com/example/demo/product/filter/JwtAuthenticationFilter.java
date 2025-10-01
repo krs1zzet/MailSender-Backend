@@ -1,125 +1,115 @@
 package com.example.demo.product.filter;
 
-import com.example.demo.features.auth.repository.TokenBlacklistRepository;
+
 import com.example.demo.features.auth.service.JwtService;
+import com.example.demo.features.user.entity.User;
+import com.example.demo.features.user.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.lang.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-@Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final JwtService jwtService;
-  private final UserDetailsService userDetailsService;
-  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-  private final TokenBlacklistRepository tokenBlacklistRepository;
+    private final JwtService jwtService;
+    private final UserService userService;
+    private final String cookieName;
 
-  // Herkese açık, token gerektirmeyen yolların listesi
-  private static final List<String> PERMIT_ALL_PATHS = Arrays.asList(
-          "/api/auth/sign-up",
-          "/api/auth/sign-in",
-          "/app_status/init",
-          "/",
-          "/favicon.ico" // Tarayıcının otomatik favicon isteği için eklendi
-  );
 
-  @Override
-  protected void doFilterInternal(
-          @NonNull HttpServletRequest request,
-          @NonNull HttpServletResponse response,
-          @NonNull FilterChain filterChain
-  ) throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain chain) throws ServletException, IOException {
+        String method = request.getMethod();
+        String path = request.getRequestURI();
 
-    // --- YENİ EKLENEN KONTROL BLOĞU ---
-    final String path = request.getServletPath();
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("[JWT] context already authenticated -> skip ({} {})", method, path);
+            }
+            chain.doFilter(request, response);
+            return;
+        }
 
-    // Eğer istek, herkese açık yollardan birine yapılıyorsa,
-    // token kontrolü yapmadan bir sonraki filtreye geç.
-    if (PERMIT_ALL_PATHS.contains(path)) {
-      filterChain.doFilter(request, response);
-      return; // Filtreyi burada sonlandır ve devam et
+        String token = resolveToken(request, cookieName);
+        if (!StringUtils.hasText(token)) {
+            if (log.isDebugEnabled()) {
+                log.debug("[JWT] no token -> anonymous ({} {})", method, path);
+            }
+            chain.doFilter(request, response);
+            return;
+        }
+        if (log.isDebugEnabled()) log.debug("[JWT] token found : {}", token);
+
+        if (!jwtService.isValid(token)) {
+            log.warn("[JWT] token INVALID (signature/expiration)");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+            return;
+        }
+        if (log.isDebugEnabled()) log.debug("[JWT] token is valid");
+
+        Optional<String> sub = jwtService.getSubject(token);
+        if (sub.isEmpty()) {
+            log.warn("[JWT] subject missing in token");
+            chain.doFilter(request, response);
+            return;
+        }
+        String username = sub.get();
+        if (log.isDebugEnabled()) log.debug("[JWT] subject(username)={}", username);
+
+        User user = userService.findByUsernameReturnUser(username);
+        if (user == null) {
+            log.warn("[JWT] user not found in DB username={}", username);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+        String roleName = user.getRole() != null ? user.getRole().getName() : "USER";
+        if (log.isDebugEnabled()) log.debug("[JWT] DB user id={} role={}", user.getId(), roleName);
+
+        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
+
+        var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        if (log.isDebugEnabled())
+            log.debug("[JWT] authentication set -> principal={} authorities={}", username, authorities);
+
+
+        chain.doFilter(request, response);
     }
-    // --- KONTROL BLOĞU BİTİŞİ ---
 
 
-    final String authHeader = request.getHeader("Authorization");
-
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      logger.warn("JWT WARNING: Authorization header is missing or malformed for protected path: {}", path);
-      // Herkese açık olmayan bir yol için token yoksa isteği burada kesmek daha güvenli olabilir.
-      response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing or malformed.");
-      return;
+    private String resolveToken(HttpServletRequest request, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (Objects.equals(cookieName, c.getName())) {
+                    return c.getValue();
+                }
+            }
+        }
+        String authz = request.getHeader("Authorization");
+        if (StringUtils.hasText(authz) && authz.startsWith("Bearer ")) {
+            return authz.substring(7);
+        }
+        return null;
     }
 
-    try {
-      /// Extract the token from the header and remove the "Bearer " prefix
-      final String token = authHeader.substring(7);
-      // 🚨 Reject blacklisted tokens
-      if (tokenBlacklistRepository.existsByToken(token)) {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted.");
-        return;
-      }
-      final String userEmail = jwtService.extractUsername(token);
-
-      if (userEmail == null) {
-        logger.error("JWT ERROR: Extracted username from token is null.");
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token: username is missing.");
-        return;
-      }
-
-      /// Check if user is already authenticated
-      if (SecurityContextHolder.getContext().getAuthentication() != null) {
-        filterChain.doFilter(request, response);
-        return;
-      }
-
-      /// Get user details from the database
-      UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-
-      if (userDetails == null) {
-        logger.error("JWT ERROR: UserDetailsService could not find user with email: {}", userEmail);
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found.");
-        return;
-      }
-
-      /// Check if the token is valid
-      if (!jwtService.isTokenValid(token, userDetails)) {
-        logger.error("JWT ERROR: Token is invalid for user: {}", userEmail);
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token.");
-        return;
-      }
-
-      /// Create and set authentication token
-      UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-              userDetails, null, userDetails.getAuthorities());
-
-      authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-      SecurityContextHolder.getContext().setAuthentication(authToken);
-
-      logger.info("JWT SUCCESS: User '{}' authenticated successfully.", userEmail);
-
-      filterChain.doFilter(request, response);
-
-    } catch (Exception e) {
-      logger.error("SECURITY_ERROR: An error occurred while processing the JWT. {}", e.getMessage());
-      response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access is denied.");
-    }
-  }
 }

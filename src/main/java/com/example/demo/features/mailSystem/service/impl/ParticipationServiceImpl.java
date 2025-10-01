@@ -6,7 +6,7 @@ import com.example.demo.features.mailSystem.entity.Event;
 import com.example.demo.features.mailSystem.entity.Participation;
 import com.example.demo.features.mailSystem.repository.ParticipationsRepository;
 import com.example.demo.features.mailSystem.service.ParticipationService;
-import com.example.demo.features.user.entity.UserEntity;
+import com.example.demo.features.user.entity.User;
 import com.example.demo.features.user.service.UserService;
 import com.example.demo.product.exceptions.generic.participationExceptions.NotFoundExceptions.ParticipationNotFoundException;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class ParticipationServiceImpl implements ParticipationService {
 
 
     @Override
-    public void save(UserEntity user, Event event)
+    public void save(User user, Event event)
     {
         Participation participation = new Participation();
         participation.setUser(user);
