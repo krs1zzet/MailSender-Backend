@@ -21,6 +21,5 @@ public class BaseReceiverRequest {
     private String email;
 
     private String groupName;
-    @NotBlank(message = validationMessages.RECEIVER_BLANK_EVENT_ID)
-    private Long eventId;
+
 }

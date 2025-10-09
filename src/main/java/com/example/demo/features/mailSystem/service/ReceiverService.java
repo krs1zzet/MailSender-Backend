@@ -1,6 +1,7 @@
 package com.example.demo.features.mailSystem.service;
 
 import com.example.demo.features.mailSystem.dto.ReceiverDTO;
+import com.example.demo.features.mailSystem.dto.request.BaseReceiverRequest;
 import com.example.demo.features.mailSystem.dto.request.CreateReceiverRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +13,7 @@ public interface ReceiverService {
      void deleteByID(Long id);
      ReceiverDTO findById(Long id);
      List<ReceiverDTO> findAll();
-     void updateByID(Long id, CreateReceiverRequest request);
+    ReceiverDTO updateByID(Long id, BaseReceiverRequest request);
      List<ReceiverDTO> findReceiversByEventId(Long theID);
       ReceiverDTO findByEmail(String email);
     }

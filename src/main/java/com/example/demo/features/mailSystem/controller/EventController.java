@@ -19,13 +19,12 @@ public class EventController {
     public EventController(EventService eventService) {
         this.eventService = eventService;
     }
-
-    @GetMapping("/events")
-    public ResponseEntity<List<EventDTO>> findAll(){
-        List<EventDTO> eventDTOList = eventService.findEventsBySignedUser();
-        log.info("Find all events");
-        return ResponseEntity.ok(eventDTOList);
-    }
+            @GetMapping("/events")
+            public ResponseEntity<List<EventDTO>> findAll(){
+                List<EventDTO> eventDTOList = eventService.findEventsBySignedUser();
+                log.info("Find all events");
+                return ResponseEntity.ok(eventDTOList);
+            }
 
     @PostMapping("/events")
     public ResponseEntity<Void> createEvent(@RequestBody CreateEventRequest request){

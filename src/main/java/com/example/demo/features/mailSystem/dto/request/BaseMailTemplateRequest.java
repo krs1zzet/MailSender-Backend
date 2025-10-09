@@ -18,5 +18,4 @@ public class BaseMailTemplateRequest {
     @NotNull(message = validationMessages.MAIL_TEMPLATE_NULL_BODY)
     private String body;
 
-    private Long eventId;
 }

@@ -1,11 +1,13 @@
 package com.example.demo.features.mailSystem.entity;
 
+import com.example.demo.features.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -27,7 +29,7 @@ public class Event {
     private String description;
 
     @Column(name = "date")
-    private String date;
+    private Instant date;
 
     @Column(name = "password")
     private String password;
@@ -43,6 +45,7 @@ public class Event {
 
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER,cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Participation> participations;
+
 
 
 }

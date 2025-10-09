@@ -3,6 +3,7 @@ package com.example.demo.features.mailSystem.service;
 
 import com.example.demo.features.mailSystem.dto.MailTemplateDTO;
 import com.example.demo.features.mailSystem.dto.request.CreateMailTemplateRequest;
+import com.example.demo.features.mailSystem.dto.request.UpdateMailTemplateRequest;
 
 import java.util.List;
 
@@ -12,5 +13,5 @@ public interface MailTemplateService {
     List<MailTemplateDTO> findMailTemplatesByEventId(Long theID);
     void save(CreateMailTemplateRequest request);
     void deleteByID(Long id);
-    void updateByID(Long id, CreateMailTemplateRequest request);
+    MailTemplateDTO updateByID(Long id, UpdateMailTemplateRequest request);
 }

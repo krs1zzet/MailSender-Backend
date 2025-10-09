@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,5 +20,5 @@ public class BaseEventRequest {
 
     private String description;
 
-    private String date;
+    private Instant date;
 }

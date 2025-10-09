@@ -1,6 +1,7 @@
 package com.example.demo.features.mailSystem.service.impl;
 
 import com.example.demo.features.mailSystem.dto.converter.ReceiverDtoConverter;
+import com.example.demo.features.mailSystem.dto.request.BaseReceiverRequest;
 import com.example.demo.features.mailSystem.dto.request.CreateReceiverRequest;
 import com.example.demo.features.mailSystem.entity.Receiver;
 import com.example.demo.features.mailSystem.dto.ReceiverDTO;
@@ -75,16 +76,14 @@ public class ReceiverServiceImpl implements ReceiverService {
 
     @Transactional
     @Override
-    public void updateByID(Long id, CreateReceiverRequest request) {
+    public ReceiverDTO updateByID(Long id, BaseReceiverRequest request) {
         Optional<Receiver> receiver = receiverRepository.findById(id);
         Receiver theReceiver = receiver.orElseThrow(() -> new ReceiverIdNotFoundException(id));
         theReceiver.setFname(request.getFname());
         theReceiver.setLname(request.getLname());
         theReceiver.setEmail(request.getEmail());
         theReceiver.setGroupName(request.getGroupName());
-        if (request.getEventId() != null) {
-            theReceiver.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
-        }
+        return receiverDtoConverter.convert(theReceiver);
     }
 
     @Override

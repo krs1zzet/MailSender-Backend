@@ -7,6 +7,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateMailTemplateRequest extends BaseMailTemplateRequest {
-    private Long eventId;
+public class UpdateMailTemplateRequest extends  BaseMailTemplateRequest{
 }

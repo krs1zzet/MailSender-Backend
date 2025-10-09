@@ -1,6 +1,7 @@
 package com.example.demo.features.mailSystem.controller;
 
 import com.example.demo.features.mailSystem.dto.ReceiverDTO;
+import com.example.demo.features.mailSystem.dto.request.BaseReceiverRequest;
 import com.example.demo.features.mailSystem.dto.request.CreateReceiverRequest;
 import com.example.demo.features.mailSystem.service.ExcelService;
 import com.example.demo.features.mailSystem.service.ReceiverService;
@@ -32,7 +33,7 @@ public class ReceiverController {
         log.info("Finding all Receivers");
         return ResponseEntity.ok(receiverDTOList);
     }
-    @GetMapping("/receivers/{eventId}")
+    @GetMapping("/receivers/event/{eventId}")
     public ResponseEntity<List<ReceiverDTO>> findReceiversByEventId(@PathVariable Long eventId){
         List<ReceiverDTO> receiverDTOList = receiverService.findReceiversByEventId(eventId);
         log.info("Finding all Receivers by event id");
@@ -60,10 +61,10 @@ public class ReceiverController {
     }
 
     @PutMapping("/receivers/{receiverId}")
-    public ResponseEntity<Void> updateReceiver(@RequestBody CreateReceiverRequest request, @PathVariable Long receiverId){
-        receiverService.updateByID(receiverId, request);
+    public ResponseEntity<ReceiverDTO> updateReceiver(@RequestBody BaseReceiverRequest request, @PathVariable Long receiverId){
+        ReceiverDTO receiverDTO = receiverService.updateByID(receiverId, request);
         log.info("Receiver updated");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(receiverDTO);
     }
 
 

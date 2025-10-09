@@ -1,5 +1,6 @@
 package com.example.demo.features.mailSystem.service.impl;
 
+import com.example.demo.features.mailSystem.dto.request.UpdateMailTemplateRequest;
 import com.example.demo.features.mailSystem.entity.MailTemplate;
 import com.example.demo.features.mailSystem.dto.MailTemplateDTO;
 import com.example.demo.features.mailSystem.dto.converter.MailTemplateDtoConverter;
@@ -59,13 +60,13 @@ public class MailTemplateServiceImpl implements MailTemplateService {
 
     @Transactional
     @Override
-    public void updateByID(Long id, CreateMailTemplateRequest request) {
+    public MailTemplateDTO updateByID(Long id, UpdateMailTemplateRequest request) {
         Optional<MailTemplate> mail = mailTemplateRepository.findById(id);
         MailTemplate theMailTemplate = mail.orElseThrow(() -> new MailTemplateIdNotFoundException(id));
         theMailTemplate.setHeader(request.getHeader());
         theMailTemplate.setBody(request.getBody());
-        theMailTemplate.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         mailTemplateRepository.save(theMailTemplate);
+        return mailTemplateDtoConverter.convert(theMailTemplate);
     }
 
     @Override

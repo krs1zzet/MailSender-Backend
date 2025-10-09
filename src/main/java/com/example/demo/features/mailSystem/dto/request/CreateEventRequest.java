@@ -14,5 +14,6 @@ import lombok.Setter;
 public class CreateEventRequest extends BaseEventRequest{
     @NotNull(message = validationMessages.EVENT_NULL_PASSWORD)
     private String password;
+    private Long ownerId;
 
 }

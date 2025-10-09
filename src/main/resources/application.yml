@@ -5,7 +5,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/MailOtomation}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
@@ -16,6 +16,13 @@ management:
   health:
     mail:
       enabled: false
+  endpoints:
+    web:
+          exposure:
+            include: health,info
+  endpoint:
+    health:
+          show-details: never
 security:
   jwt:
     secret: "a-string-secret-at-least-256-bits-long"

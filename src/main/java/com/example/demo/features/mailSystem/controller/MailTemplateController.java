@@ -2,6 +2,7 @@ package com.example.demo.features.mailSystem.controller;
 
 import com.example.demo.features.mailSystem.dto.MailTemplateDTO;
 import com.example.demo.features.mailSystem.dto.request.CreateMailTemplateRequest;
+import com.example.demo.features.mailSystem.dto.request.UpdateMailTemplateRequest;
 import com.example.demo.features.mailSystem.service.MailTemplateService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,15 @@ public class MailTemplateController {
         log.info("Mails found");
         return ResponseEntity.ok(mailTemplateDTOList);
     }
-    @GetMapping("/mailTemplates/{eventId}")
+
+    @GetMapping("/mailTemplates/{mailId}")
+    public ResponseEntity<MailTemplateDTO> findById(@PathVariable Long mailId){
+        MailTemplateDTO mailTemplateDTO = mailTemplateService.findByID(mailId);
+        log.info("Mail found by id");
+        return ResponseEntity.ok(mailTemplateDTO);
+    }
+
+    @GetMapping("/mailTemplates/event/{eventId}")
     public ResponseEntity<List<MailTemplateDTO>> findMailTemplateByEventId(@Valid @PathVariable Long eventId){
         List<MailTemplateDTO> mailTemplateDTOList = mailTemplateService.findMailTemplatesByEventId(eventId);
         log.info("Mails found by event id");
@@ -47,10 +56,10 @@ public class MailTemplateController {
         return ResponseEntity.ok().build();
     }
     @PutMapping("/mailTemplates/{mailId}")
-    public ResponseEntity<Void> updateMailTemplate(@Valid@RequestBody CreateMailTemplateRequest request, @PathVariable Long mailId){
-        mailTemplateService.updateByID(mailId, request);
+    public ResponseEntity<MailTemplateDTO> updateMailTemplate(@Valid@RequestBody UpdateMailTemplateRequest request, @PathVariable Long mailId){
+        MailTemplateDTO mailTemplateDTO = mailTemplateService.updateByID(mailId, request);
         log.info("Mail updated");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(mailTemplateDTO);
     }
 
 
