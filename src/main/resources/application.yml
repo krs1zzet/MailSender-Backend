@@ -29,14 +29,7 @@ security:
     expiration: 3600000
     issuer: "ChartFlowApp"
     cookie-name: "AUTH"
-    cookie-secure: "false"
+    cookie-secure: "true"
 auth:
   default-role: USER
 
-
-app:
-  cors:
-    allowed-origins:
-      - http://localhost:5173
-      - http://localhost:8080
-      - http://127.0.0.1:5173
