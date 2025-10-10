@@ -1,6 +1,5 @@
 package com.example.demo.product.filter;
 
-
 import com.example.demo.features.auth.service.JwtService;
 import com.example.demo.features.user.entity.User;
 import com.example.demo.features.user.service.UserService;
@@ -11,11 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -33,68 +30,81 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final String cookieName;
 
+    private static final AntPathMatcher PM = new AntPathMatcher();
+    // Bu yollar filtreden tamamen muaf: signin/signup vs. CORS preflight ve actuator
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/api/auth/**",
+            "/actuator/**",
+            "/health"           // Caddy’deki basit health’i de rahat bırak
+    );
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        final String method = request.getMethod();
+        final String path = request.getRequestURI();
+
+        // Preflight istekleri filtreden geçmesin
+        if ("OPTIONS".equalsIgnoreCase(method)) return true;
+
+        // Bypass list
+        for (String p : EXCLUDED_PATHS) {
+            if (PM.match(p, path)) return true;
+        }
+        return false;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String method = request.getMethod();
-        String path = request.getRequestURI();
 
+        // Zaten authenticated ise bırak
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("[JWT] context already authenticated -> skip ({} {})", method, path);
-            }
             chain.doFilter(request, response);
             return;
         }
 
+        // Cookie veya Authorization header’dan token çöz
         String token = resolveToken(request, cookieName);
         if (!StringUtils.hasText(token)) {
-            if (log.isDebugEnabled()) {
-                log.debug("[JWT] no token -> anonymous ({} {})", method, path);
-            }
+            if (log.isDebugEnabled()) log.debug("[JWT] No token -> continue as anonymous");
             chain.doFilter(request, response);
             return;
         }
-        if (log.isDebugEnabled()) log.debug("[JWT] token found : {}", token);
 
+        // Token doğrula — GEÇERSİZSE BİLE zinciri kesme (signin/signup kırılmasın)
         if (!jwtService.isValid(token)) {
-            log.warn("[JWT] token INVALID (signature/expiration)");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+            if (log.isWarnEnabled()) log.warn("[JWT] Invalid token (signature/exp). Continuing without auth.");
+            chain.doFilter(request, response);
             return;
         }
-        if (log.isDebugEnabled()) log.debug("[JWT] token is valid");
 
         Optional<String> sub = jwtService.getSubject(token);
         if (sub.isEmpty()) {
-            log.warn("[JWT] subject missing in token");
+            if (log.isWarnEnabled()) log.warn("[JWT] Missing subject in token. Continuing without auth.");
             chain.doFilter(request, response);
             return;
         }
-        String username = sub.get();
-        if (log.isDebugEnabled()) log.debug("[JWT] subject(username)={}", username);
 
+        String username = sub.get();
         User user = userService.findByUsernameReturnUser(username);
         if (user == null) {
-            log.warn("[JWT] user not found in DB username={}", username);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            if (log.isWarnEnabled()) log.warn("[JWT] User not found in DB username={}", username);
+            chain.doFilter(request, response);
             return;
         }
-        String roleName = user.getRole() != null ? user.getRole().getName() : "USER";
-        if (log.isDebugEnabled()) log.debug("[JWT] DB user id={} role={}", user.getId(), roleName);
 
+        String roleName = (user.getRole() != null ? user.getRole().getName() : "USER");
         var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
 
         var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
+
         if (log.isDebugEnabled())
             log.debug("[JWT] authentication set -> principal={} authorities={}", username, authorities);
 
-
         chain.doFilter(request, response);
     }
-
 
     private String resolveToken(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
@@ -111,5 +121,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }
