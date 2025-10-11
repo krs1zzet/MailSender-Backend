@@ -8,7 +8,7 @@ import com.example.demo.features.mailSystem.constants.validationMessages;
 @Getter
 @Setter
 public class CreateSenderRequest extends BaseSenderRequest {
-    @NotNull(message = validationMessages.SENDER_NULL_PASSWORD)
-    private String password;
+    private Long eventId;
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.demo.features.mailSystem.controller;
 
+import com.example.demo.features.mailSystem.dto.request.BaseSenderRequest;
 import com.example.demo.features.mailSystem.dto.request.CreateSenderRequest;
 import com.example.demo.features.mailSystem.service.SenderService;
 import com.example.demo.features.mailSystem.dto.SenderDTO;
@@ -49,7 +50,7 @@ public class SenderController {
         return ResponseEntity.ok().build();
     }
     @PutMapping("/senders/{id}")
-    public ResponseEntity<Void> updateSenderer(@RequestBody CreateSenderRequest request, @PathVariable Long id){
+    public ResponseEntity<Void> updateSenderer(@RequestBody BaseSenderRequest request, @PathVariable Long id){
         senderService.updateById(id, request);
         log.info("Senderer updated");
         return ResponseEntity.ok().build();

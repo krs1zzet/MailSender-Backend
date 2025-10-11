@@ -61,16 +61,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration conf = new CorsConfiguration();
 
-        // Tam eşleşme: listedeki origin'ler
         conf.setAllowedOrigins(ALLOWED_ORIGINS);
 
-        // Eğer *.izzettin.dev gibi wildcard da istiyorsan aşağıyı aç ve üstteki satırı yoruma al:
-        // conf.setAllowedOriginPatterns(List.of("https://*.izzettin.dev", "http://localhost:*", "https://localhost:*"));
+
 
         conf.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        conf.setAllowedHeaders(List.of("*")); // istersen "Authorization","Content-Type" vb. olarak daralt
-        conf.setAllowCredentials(true);       // cookie/JWT-cookie ile auth yapıyorsan gerekli
-
+        conf.setAllowedHeaders(List.of("*"));
+        conf.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", conf);
         return source;

@@ -1,5 +1,6 @@
 package com.example.demo.features.mailSystem.service.impl;
 
+import com.example.demo.features.mailSystem.dto.request.BaseSenderRequest;
 import com.example.demo.features.mailSystem.entity.Sender;
 import com.example.demo.features.mailSystem.dto.SenderDTO;
 import com.example.demo.features.mailSystem.dto.converter.SenderDtoConverter;
@@ -9,11 +10,13 @@ import com.example.demo.features.mailSystem.service.EventService;
 import com.example.demo.features.mailSystem.service.SenderService;
 import com.example.demo.product.exceptions.generic.senderExceptions.NotFoundExceptions.SenderIdNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+@Slf4j
 @Service
 public class SenderServiceImpl implements SenderService {
 
@@ -41,6 +44,7 @@ public class SenderServiceImpl implements SenderService {
 
     @Override
     public void save(CreateSenderRequest request) {
+        log.info("Saving new sender with email: {}", request.getEmail());
         Sender sender = new Sender();
         sender.setEmail(request.getEmail());
         sender.setCreatedAt(LocalDateTime.now());
@@ -73,14 +77,13 @@ public class SenderServiceImpl implements SenderService {
     }
     @Override
     @Transactional
-    public void updateById(Long id, CreateSenderRequest request) {
+    public void updateById(Long id, BaseSenderRequest request) {
         Optional<Sender> senderer = senderRepository.findById(id);
         Sender theSender = senderer.orElseThrow(()-> new SenderIdNotFoundException(id));
         theSender.setEmail(request.getEmail());
         theSender.setCreatedAt(LocalDateTime.now());
         theSender.setEncryptedPassword(request.getPassword());
         theSender.setLastUsedAt(LocalDateTime.now());
-        theSender.setEvent(eventService.findById_ReturnEvent(request.getEventId()));
         senderRepository.save(theSender);
     }
 

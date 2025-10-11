@@ -1,6 +1,7 @@
 package com.example.demo.features.mailSystem.controller;
 
 import com.example.demo.features.mailSystem.dto.MailDTO;
+import com.example.demo.features.mailSystem.dto.request.BaseSendMailRequest;
 import com.example.demo.features.mailSystem.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,15 +21,15 @@ public class MailController {
     }
 
     @PostMapping("/send-mail")
-    public ResponseEntity<?> sendMail(@RequestParam Long senderID,
-                                      @RequestParam List<Long> receiverIDs,
-                                      @RequestParam Long mailTemplateID) {
+    public ResponseEntity<MailDTO> sendMail(@RequestBody BaseSendMailRequest request) {
 
-        MailDTO response = mailService.sendMail(senderID, receiverIDs, mailTemplateID);
+        MailDTO response = mailService.sendMail(request.getSenderId(), request.getReceiverIds(),request.getMailTemplateId());
 
         if (!response.isSuccess()) {
             log.error("Mail sending failed for some recipients: {}", response.getFailedEmails());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(response);
         }
 
         log.info("Mail sent successfully");

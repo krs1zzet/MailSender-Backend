@@ -58,6 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
+
         // Zaten authenticated ise bırak
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             chain.doFilter(request, response);

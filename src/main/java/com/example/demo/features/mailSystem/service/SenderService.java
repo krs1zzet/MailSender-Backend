@@ -1,6 +1,7 @@
 package com.example.demo.features.mailSystem.service;
 
 import com.example.demo.features.mailSystem.dto.SenderDTO;
+import com.example.demo.features.mailSystem.dto.request.BaseSenderRequest;
 import com.example.demo.features.mailSystem.dto.request.CreateSenderRequest;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface SenderService {
     List<SenderDTO> findAll();
     void save(CreateSenderRequest request);
     void deleteById(Long id);
-    void updateById(Long id, CreateSenderRequest request);
+     void updateById(Long id, BaseSenderRequest request);
     List<SenderDTO> findSendersByEventId(Long theID);
     void updateLastUsedAt(Long senderId);
     String findPasswordBySenderId(Long senderId);
