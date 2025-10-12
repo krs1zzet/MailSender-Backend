@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -79,52 +79,52 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.13.0</version>
+			<version>2.20.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.23.0</version>
+			<version>1.28.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>5.0.0</version>
+			<version>5.20.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>5.0.0</version>
+			<version>5.20.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>5.0.0</version>
+			<version>5.4.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>5.0.0</version>
+			<version>5.4.1</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.12.5</version>
+			<version>0.13.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.12.5</version>
+			<version>0.13.0</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
-			<version>0.12.5</version>
+			<version>0.13.0</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -157,14 +157,14 @@
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
 				<version>3.4.4</version>
-					<configuration>
-						<container>
-							<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-						</container>
-						<to>
-							<image>cmdotenter/mailsender:latest</image>  <!-- Explicit repository -->
-						</to>
-					</configuration>
+				<configuration>
+					<container>
+						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+					</container>
+					<to>
+						<image>cmdotenter/mailsender:latest</image>  <!-- Explicit repository -->
+					</to>
+				</configuration>
 			</plugin>
 
 			<!-- ✅ Maven Compiler Plugin (No Change Needed) -->
